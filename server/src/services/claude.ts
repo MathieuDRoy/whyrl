@@ -36,7 +36,7 @@ const CARDS_SCHEMA = {
           summary: { type: 'string' },
           details: { type: 'string' },
           category: { type: 'string', enum: ['politics', 'finance', 'sport', 'entertainment', 'tech', 'world'] },
-          source: { type: 'string', enum: ['twitter', 'reddit'] },
+          source: { type: 'string', enum: ['newsapi', 'reddit'] },
           region: { type: 'string' },
           timestamp: { type: 'string' },
           trendingScore: { type: 'number' },

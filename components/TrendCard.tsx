@@ -63,7 +63,7 @@ export default function TrendCard({ card, onPress }: Props) {
           </View>
           <View style={styles.sourceBadge}>
             <Ionicons
-              name={card.source === 'twitter' ? 'logo-twitter' : 'logo-reddit'}
+              name={card.source === 'reddit' ? 'logo-reddit' : 'newspaper-outline'}
               size={11}
               color={theme.colors.textSecondary}
             />

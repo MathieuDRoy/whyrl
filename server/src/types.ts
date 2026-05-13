@@ -6,7 +6,7 @@ export interface TrendCard {
   summary: string;
   details: string;
   category: Category;
-  source: 'twitter' | 'reddit';
+  source: 'newsapi' | 'reddit';
   region: string;
   timestamp: string;
   trendingScore: number;
@@ -21,7 +21,7 @@ export interface RawPost {
   score: number;
   comments: number;
   subreddit?: string;
-  source: 'twitter' | 'reddit';
+  source: 'newsapi' | 'reddit';
 }
 
 export interface TrendsQuery {

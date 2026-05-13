@@ -1,6 +1,6 @@
 import { Category } from './theme';
 
-export type Source = 'twitter' | 'reddit';
+export type Source = 'newsapi' | 'reddit';
 
 export interface TrendCard {
   id: string;
@@ -45,7 +45,7 @@ export const MOCK_CARDS: TrendCard[] = [
     details:
       'Apple shocked the tech world at its spring event by announcing the MacBook Pro M5 Ultra, featuring a custom silicon chip that integrates a dedicated neural processing unit capable of running 70-billion-parameter language models entirely on-device. The 72-hour claimed battery life — nearly triple the previous generation — is powered by a graphene-composite battery cell and extreme efficiency improvements in the 3nm process node.\n\nCraig Federighi demonstrated real-time video transcription, on-device document summarization, and local image generation without any internet connection. Privacy advocates praised the offline-first approach.\n\nThe MacBook Pro M5 Ultra starts at $2,499 and ships next month. Pre-orders opened immediately, with analysts forecasting $8 billion in revenue in the launch quarter alone.',
     category: 'tech',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: '2h ago',
     trendingScore: 99,
@@ -93,7 +93,7 @@ export const MOCK_CARDS: TrendCard[] = [
     details:
       'The United States Senate passed the landmark Clean Future Infrastructure Act by a 58-42 bipartisan margin, the largest climate-focused spending bill in American history. The $800 billion package allocates funds over 10 years for a modernized national electrical grid, 500,000 new EV charging stations, carbon capture facilities at major industrial sites, and green hydrogen production hubs.\n\nEnvironmental groups called it "transformational." Energy companies are already positioning for massive contract opportunities, with shares of NextEra Energy and First Solar surging 12% and 18% respectively.\n\nCritics argue the bill\'s inflation offset mechanisms are insufficient, while proponents cite the Congressional Budget Office\'s finding that it will reduce the deficit by $130 billion over a decade through energy royalties and efficiency savings.',
     category: 'politics',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: '4h ago',
     trendingScore: 91,
@@ -124,7 +124,7 @@ export const MOCK_CARDS: TrendCard[] = [
     details:
       'OpenAI unveiled GPT-5, its most capable model yet, featuring continuous memory across sessions and real-time visual processing through connected cameras. The model can now remember user preferences, past conversations, and ongoing projects indefinitely — unless the user opts out.\n\nEarly benchmarks show GPT-5 surpassing human expert performance on medical diagnosis, legal reasoning, and advanced mathematics. The real-time vision capability allows the model to analyze video streams, making it viable for live surveillance assistance, surgical guidance, and autonomous vehicle co-piloting.\n\nPrivacy advocates have raised urgent concerns about the persistent memory feature. OpenAI CEO Sam Altman acknowledged the sensitivity: "We\'re giving users granular controls — you own your memory, always."',
     category: 'tech',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: '6h ago',
     trendingScore: 100,
@@ -138,7 +138,7 @@ export const MOCK_CARDS: TrendCard[] = [
     summary: 'Professional-grade financial data, news, and analytics. First month free for Whyrl readers.',
     details: 'Access the same data that moves markets. Bloomberg anywhere, on any device.',
     category: 'finance',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: 'Sponsored',
     trendingScore: 0,
@@ -172,7 +172,7 @@ export const MOCK_CARDS: TrendCard[] = [
     details:
       'Nvidia surpassed $5 trillion in market capitalization today, becoming the most valuable publicly traded company in history, overtaking both Apple ($4.8T) and Microsoft ($4.6T). The milestone was reached as shares rose 3.2% following an analyst day presentation that revealed the Blackwell Ultra GPU architecture — a 70% performance improvement over the current generation.\n\nDemand for Nvidia\'s AI training chips remains insatiable, with hyperscalers including Amazon, Google, and Microsoft competing for allocation. The company\'s data center revenue grew 427% year-over-year in the last quarter.\n\nCEO Jensen Huang, wearing his signature leather jacket, told investors: "We are at the beginning of a new industrial revolution. Every company will need to think about AI infrastructure the way they think about electricity."',
     category: 'finance',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: '8h ago',
     trendingScore: 97,
@@ -202,7 +202,7 @@ export const MOCK_CARDS: TrendCard[] = [
     details:
       'North Korea successfully launched what it describes as a "multi-purpose reconnaissance satellite" capable of imaging United States military installations across the Pacific, triggering an emergency session of the UN Security Council. The satellite, designated KMS-7, reportedly completed three orbits before transmitting imagery back to Pyongyang.\n\nThe launch represents a significant advancement in North Korea\'s space program and constitutes a violation of multiple UN Security Council resolutions. South Korea scrambled jets and placed its military on heightened alert.\n\nChina and Russia, as permanent Security Council members, are expected to veto any new sanctions resolution, deepening diplomatic tensions. US Secretary of State issued a statement condemning "this flagrant provocation" and promised a "measured but decisive response."',
     category: 'world',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: '10h ago',
     trendingScore: 92,
@@ -218,7 +218,7 @@ export const MOCK_CARDS: TrendCard[] = [
     details:
       'Simone Biles announced on social media that she intends to compete at the 2028 Los Angeles Olympic Games, targeting what would be her fifth and final Olympic campaign at the age of 31. The 7-time Olympic gold medalist made the announcement in an emotional video, thanking fans and her training team.\n\n"Los Angeles is my chance to show the world that age is just a number," Biles said. "I\'m training harder than I ever have, and I feel incredible."\n\nUSA Gymnastics confirmed her continued affiliation with the national program. Sports scientists noted that gymnastics athletes are now performing at elite levels into their early 30s due to advances in sports medicine and load management. Analysts expect her return to generate unprecedented viewership for the home-country Games.',
     category: 'sport',
-    source: 'twitter',
+    source: 'newsapi',
     region: 'US',
     timestamp: '11h ago',
     trendingScore: 93,
