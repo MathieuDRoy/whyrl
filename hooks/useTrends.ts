@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { TrendCard, MOCK_CARDS } from '../constants/mockData';
 import { fetchTrends } from '../services/api';
 import { useApp } from '../store/AppContext';
+import { usePurchase } from '../store/PurchaseContext';
 
 interface UseTrendsResult {
   cards: TrendCard[];
@@ -12,6 +13,7 @@ interface UseTrendsResult {
 
 export function useTrends(): UseTrendsResult {
   const { state } = useApp();
+  const { isPremium } = usePurchase();
   const [cards, setCards] = useState<TrendCard[]>(MOCK_CARDS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,18 +23,18 @@ export function useTrends(): UseTrendsResult {
     setError(null);
     try {
       const fresh = await fetchTrends(state.region, state.preferredCategories);
-      // Keep ad cards from mockData mixed in with live cards
       const ads = MOCK_CARDS.filter((c) => c.isAd);
-      const merged = interleaveAds(fresh, ads);
-      setCards(merged);
+      setCards(isPremium ? fresh : interleaveAds(fresh, ads));
     } catch (err: any) {
       console.warn('[useTrends] falling back to mock data:', err?.message);
       setError('Could not reach server — showing sample data');
-      setCards(MOCK_CARDS);
+      const ads = MOCK_CARDS.filter((c) => c.isAd);
+      const nonAds = MOCK_CARDS.filter((c) => !c.isAd);
+      setCards(isPremium ? nonAds : interleaveAds(nonAds, ads));
     } finally {
       setLoading(false);
     }
-  }, [state.region, state.preferredCategories]);
+  }, [state.region, state.preferredCategories, isPremium]);
 
   useEffect(() => {
     load();
@@ -41,14 +43,14 @@ export function useTrends(): UseTrendsResult {
   return { cards, loading, error, refresh: load };
 }
 
+// Insert 1 ad after every 10 non-ad cards.
 function interleaveAds(cards: TrendCard[], ads: TrendCard[]): TrendCard[] {
   if (ads.length === 0) return cards;
   const result: TrendCard[] = [];
-  const adStep = Math.max(Math.floor(cards.length / ads.length), 4);
   let adIdx = 0;
   cards.forEach((card, i) => {
     result.push(card);
-    if ((i + 1) % adStep === 0 && adIdx < ads.length) {
+    if ((i + 1) % 10 === 0 && adIdx < ads.length) {
       result.push(ads[adIdx++]);
     }
   });

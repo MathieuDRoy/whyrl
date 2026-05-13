@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 import { useApp } from '../store/AppContext';
+import { usePurchase } from '../store/PurchaseContext';
 
 const FREE_FEATURES = [
   { label: 'Up to 8 trend cards per session', included: true },
@@ -38,13 +40,9 @@ const PREMIUM_FEATURES = [
 ];
 
 export default function SubscriptionScreen() {
-  const { state, dispatch } = useApp();
+  const { state } = useApp();
+  const { isPremium, purchaseMonthly, purchasing, purchaseError } = usePurchase();
   const router = useRouter();
-  const isPremium = state.user.plan === 'premium';
-
-  const handleUpgrade = () => {
-    dispatch({ type: 'UPGRADE_PLAN' });
-  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -107,7 +105,7 @@ export default function SubscriptionScreen() {
               <View style={styles.planHeader}>
                 <Text style={[styles.planName, { color: theme.colors.accent }]}>Premium</Text>
                 <View style={styles.planPrice}>
-                  <Text style={[styles.planPriceAmount, { color: theme.colors.accent }]}>$7</Text>
+                  <Text style={[styles.planPriceAmount, { color: theme.colors.accent }]}>$4.99</Text>
                   <Text style={[styles.planPricePeriod, { color: theme.colors.textSecondary }]}>/mo</Text>
                 </View>
               </View>
@@ -121,17 +119,33 @@ export default function SubscriptionScreen() {
         </View>
 
         {!isPremium && (
-          <TouchableOpacity style={styles.upgradeBtn} onPress={handleUpgrade} activeOpacity={0.85}>
-            <LinearGradient
-              colors={[theme.colors.accent, theme.colors.accentDark]}
-              style={styles.upgradeBtnGrad}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+          <>
+            {purchaseError ? (
+              <Text style={styles.errorText}>{purchaseError}</Text>
+            ) : null}
+            <TouchableOpacity
+              style={[styles.upgradeBtn, purchasing && { opacity: 0.6 }]}
+              onPress={purchaseMonthly}
+              disabled={purchasing}
+              activeOpacity={0.85}
             >
-              <Ionicons name="flash" size={18} color="#000" />
-              <Text style={styles.upgradeBtnText}>Upgrade to Premium — $7/mo</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+              <LinearGradient
+                colors={[theme.colors.accent, theme.colors.accentDark]}
+                style={styles.upgradeBtnGrad}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+              >
+                {purchasing ? (
+                  <ActivityIndicator color="#000" />
+                ) : (
+                  <>
+                    <Ionicons name="flash" size={18} color="#000" />
+                    <Text style={styles.upgradeBtnText}>Upgrade to Premium — $4.99/mo</Text>
+                  </>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
+          </>
         )}
 
         <Text style={styles.legalText}>
@@ -263,6 +277,12 @@ const styles = StyleSheet.create({
   },
   upgradeBtnText: { color: '#000', fontSize: 16, fontWeight: '900', letterSpacing: 0.2 },
 
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: 12,
+  },
   legalText: {
     color: theme.colors.textMuted,
     fontSize: 11,
