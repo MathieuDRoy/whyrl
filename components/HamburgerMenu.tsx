@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { theme, REGIONS } from '../constants/theme';
 import { useApp } from '../store/AppContext';
+import { useAuth } from '../store/AuthContext';
 
 interface Props {
   visible: boolean;
@@ -25,6 +26,7 @@ const DRAWER_W = Math.min(SCREEN_W * 0.82, 320);
 
 export default function HamburgerMenu({ visible, onClose }: Props) {
   const { state, dispatch } = useApp();
+  const { session, signOut } = useAuth();
   const router = useRouter();
   const slideAnim = useRef(new Animated.Value(DRAWER_W)).current;
 
@@ -60,7 +62,7 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
               </View>
               <View style={styles.profileInfo}>
                 <Text style={styles.profileName}>{state.user.name}</Text>
-                <Text style={styles.profileEmail}>{state.user.email}</Text>
+                <Text style={styles.profileEmail}>{session?.user.email ?? state.user.email}</Text>
                 <View style={styles.planBadge}>
                   <Ionicons
                     name={state.user.plan === 'premium' ? 'star' : 'star-outline'}
@@ -130,7 +132,7 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
             )}
 
             <View style={styles.footer}>
-              <TouchableOpacity style={styles.signOutBtn} onPress={onClose}>
+              <TouchableOpacity style={styles.signOutBtn} onPress={() => { onClose(); signOut(); }}>
                 <Ionicons name="log-out-outline" size={16} color={theme.colors.textMuted} />
                 <Text style={styles.signOutText}>Sign Out</Text>
               </TouchableOpacity>
