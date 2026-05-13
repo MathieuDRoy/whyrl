@@ -24,17 +24,27 @@ export async function fetchTwitterPosts(
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${BEARER}` },
     });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      console.warn(`[twitter] ${res.status} ${res.statusText}${body ? ': ' + body.slice(0, 200) : ''}`);
+      return [];
+    }
     const data = (await res.json()) as any;
 
-    return (data.data ?? []).map((t: any) => ({
+    if (!data.data?.length) {
+      console.warn('[twitter] No tweets returned. Errors:', JSON.stringify(data.errors ?? data));
+      return [];
+    }
+
+    return data.data.map((t: any) => ({
       title: t.text.slice(0, 120),
       body: t.text,
       score: t.public_metrics?.like_count ?? 0,
       comments: t.public_metrics?.reply_count ?? 0,
       source: 'twitter' as const,
     }));
-  } catch {
+  } catch (err: any) {
+    console.warn('[twitter] fetch error:', err?.message);
     return [];
   }
 }
