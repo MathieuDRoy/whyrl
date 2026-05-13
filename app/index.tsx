@@ -116,7 +116,7 @@ export default function FeedScreen() {
           <TouchableOpacity style={styles.feedFooterContent} onPress={refresh}>
             <Ionicons name="sparkles" size={13} color={theme.colors.accent} />
             <Text style={styles.feedFooterText}>
-              AI-curated from X & Reddit · Updated every 15 min
+              AI-curated trends · Updated every 15 min
             </Text>
           </TouchableOpacity>
           <View style={styles.feedFooterDivider} />
