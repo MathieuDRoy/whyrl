@@ -7,6 +7,21 @@
     "scheme": "whyrl",
     "userInterfaceStyle": "dark",
     "backgroundColor": "#0A0A0A",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0A"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0A"
+      }
+    },
     "web": {
       "bundler": "metro",
       "output": "single",
