@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { Category } from '../constants/theme';
+import { TrendCard } from '../constants/mockData';
+import { useAuth } from './AuthContext';
+import { getSavedTrendIds, saveTrend, deleteTrend } from '../services/trendsStorage';
 
 export type FilterCategory = Category | 'all';
 
@@ -69,22 +71,54 @@ function reducer(state: AppState, action: Action): AppState {
 const AppContext = createContext<{
   state: AppState;
   dispatch: React.Dispatch<Action>;
+  toggleSave: (card: TrendCard) => Promise<void>;
 } | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { session } = useAuth();
+  const userId = session?.user.id;
 
+  // Load saved IDs from Supabase whenever the logged-in user changes
   useEffect(() => {
-    AsyncStorage.getItem('whyrl_saved').then((data) => {
-      if (data) dispatch({ type: 'LOAD_SAVED', ids: JSON.parse(data) });
+    if (!userId) {
+      dispatch({ type: 'LOAD_SAVED', ids: [] });
+      return;
+    }
+    getSavedTrendIds(userId).then((ids) => {
+      dispatch({ type: 'LOAD_SAVED', ids });
     });
-  }, []);
+  }, [userId]);
 
-  useEffect(() => {
-    AsyncStorage.setItem('whyrl_saved', JSON.stringify(state.savedCardIds));
-  }, [state.savedCardIds]);
+  const toggleSave = useCallback(
+    async (card: TrendCard) => {
+      if (!userId) return;
 
-  return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
+      const alreadySaved = state.savedCardIds.includes(card.id);
+
+      // Optimistic update
+      dispatch({ type: 'TOGGLE_SAVE', id: card.id });
+
+      try {
+        if (alreadySaved) {
+          await deleteTrend(userId, card.id);
+        } else {
+          await saveTrend(userId, card);
+        }
+      } catch (err: any) {
+        // Revert on failure
+        dispatch({ type: 'TOGGLE_SAVE', id: card.id });
+        console.warn('[toggleSave] error, reverting:', err?.message);
+      }
+    },
+    [userId, state.savedCardIds],
+  );
+
+  return (
+    <AppContext.Provider value={{ state, dispatch, toggleSave }}>
+      {children}
+    </AppContext.Provider>
+  );
 }
 
 export function useApp() {

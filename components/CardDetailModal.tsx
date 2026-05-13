@@ -24,7 +24,7 @@ interface Props {
 const { height: SCREEN_H } = Dimensions.get('window');
 
 export default function CardDetailModal({ card, onClose }: Props) {
-  const { state, dispatch } = useApp();
+  const { state, toggleSave } = useApp();
   const slideAnim = useRef(new Animated.Value(SCREEN_H)).current;
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export default function CardDetailModal({ card, onClose }: Props) {
               </TouchableOpacity>
               <View style={styles.heroActions}>
                 <TouchableOpacity
-                  onPress={() => dispatch({ type: 'TOGGLE_SAVE', id: card.id })}
+                  onPress={() => toggleSave(card)}
                   style={[styles.actionBtn, saved && { backgroundColor: theme.colors.accentDim, borderColor: theme.colors.accent }]}
                 >
                   <Ionicons

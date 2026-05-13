@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function TrendCard({ card, onPress }: Props) {
-  const { state, dispatch } = useApp();
+  const { state, toggleSave } = useApp();
   const saved = state.savedCardIds.includes(card.id);
 
   if (card.isAd) {
@@ -82,7 +82,7 @@ export default function TrendCard({ card, onPress }: Props) {
           <TouchableOpacity
             onPress={(e) => {
               e.stopPropagation();
-              dispatch({ type: 'TOGGLE_SAVE', id: card.id });
+              toggleSave(card);
             }}
             style={styles.saveBtn}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
