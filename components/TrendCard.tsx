@@ -61,13 +61,6 @@ export default function TrendCard({ card, onPress }: Props) {
               {card.category.toUpperCase()}
             </Text>
           </View>
-          <View style={styles.sourceBadge}>
-            <Ionicons
-              name={card.source === 'reddit' ? 'logo-reddit' : 'newspaper-outline'}
-              size={11}
-              color={theme.colors.textSecondary}
-            />
-          </View>
         </View>
         <View style={styles.trendRow}>
           <Ionicons name="flame" size={12} color={catColor} />

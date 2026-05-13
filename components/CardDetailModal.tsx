@@ -87,16 +87,6 @@ export default function CardDetailModal({ card, onClose }: Props) {
                   {card.category.toUpperCase()}
                 </Text>
               </View>
-              <View style={styles.sourceBadge}>
-                <Ionicons
-                  name={card.source === 'reddit' ? 'logo-reddit' : 'newspaper-outline'}
-                  size={12}
-                  color={theme.colors.textSecondary}
-                />
-                <Text style={styles.sourceText}>
-                  {card.source === 'reddit' ? 'Reddit' : 'NewsAPI'}
-                </Text>
-              </View>
               <Text style={styles.regionText}>🌐 {card.region}</Text>
             </View>
           </LinearGradient>
@@ -158,7 +148,7 @@ export default function CardDetailModal({ card, onClose }: Props) {
             <View style={styles.aiNote}>
               <Ionicons name="sparkles" size={13} color={theme.colors.accent} />
               <Text style={styles.aiNoteText}>
-                AI-summarized from {card.source === 'reddit' ? 'Reddit' : 'NewsAPI'} · Regional data for {card.region}
+                AI-summarized trends · Regional data for {card.region}
               </Text>
             </View>
           </ScrollView>
