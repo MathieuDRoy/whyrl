@@ -21,7 +21,7 @@ async function fetchCategory(cat: Category, region: string): Promise<RawPost[]> 
   if (!API_KEY) return [];
 
   const { category, q } = CATEGORY_PARAMS[cat];
-  const params = new URLSearchParams({ apiKey: API_KEY, language: 'en', pageSize: '20' });
+  const params = new URLSearchParams({ apiKey: API_KEY, language: 'en', pageSize: '100' });
 
   if (category) params.set('category', category);
   if (q)        params.set('q', q);

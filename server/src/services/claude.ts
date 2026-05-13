@@ -57,7 +57,7 @@ export async function analyzeTrends(
   // Sort by engagement and cap at 40 to keep the prompt size manageable
   const topPosts = [...posts]
     .sort((a, b) => (b.score + b.comments) - (a.score + a.comments))
-    .slice(0, 40);
+    .slice(0, 80);
 
   const userMessage = `
 Region: ${region}
@@ -68,7 +68,7 @@ ${topPosts.map((p, i) => `[${i + 1}] SOURCE:${p.source} SCORE:${p.score} COMMENT
 TITLE: ${p.title}
 BODY: ${p.body.slice(0, 300)}`).join('\n\n')}
 
-Return up to 12 trend cards as JSON matching the schema. Use region "${region}" on all cards.`;
+Return up to 30 trend cards as JSON matching the schema. Use region "${region}" on all cards.`;
 
   // Cast to any: SDK v0.40 types predate `thinking: adaptive` and `output_config`.
   // Both are supported by the API at runtime — this lets the build succeed until
