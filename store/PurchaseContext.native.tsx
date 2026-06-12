@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import Purchases from 'react-native-purchases';
 import { useAuth } from './AuthContext';
 
-const RC_KEY = 'test_SMSXBNicelTfREXDsknRdRjjHus';
+const RC_KEY = 'appl_OnhzZshsMsEVsKvGLiASCsmHKzY';
 const ENTITLEMENT = 'premium';
 
 interface PurchaseContextValue {

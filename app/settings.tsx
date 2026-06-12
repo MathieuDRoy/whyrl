@@ -129,8 +129,23 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Legal */}
+        <SectionLabel icon="document-text-outline" title="Legal" />
+        <View style={styles.card}>
+          <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/privacy')}>
+            <Text style={styles.linkLabel}>Privacy Policy</Text>
+            <Ionicons name="chevron-forward" size={16} color={theme.colors.textMuted} />
+          </TouchableOpacity>
+          <View style={styles.toggleDivider} />
+          <TouchableOpacity style={styles.linkRow} onPress={() => router.push('/terms')}>
+            <Text style={styles.linkLabel}>Terms of Service</Text>
+            <Ionicons name="chevron-forward" size={16} color={theme.colors.textMuted} />
+          </TouchableOpacity>
+        </View>
+
         <Text style={styles.footerNote}>
-          Whyrl uses AI to summarize trending content from X (Twitter) and Reddit APIs.
+          Whyrl uses AI to summarize trending content from NewsAPI and Reddit.
+          Summaries are AI-generated and do not reproduce original articles.
           Content is region-filtered and updated every 15 minutes.
         </Text>
       </ScrollView>

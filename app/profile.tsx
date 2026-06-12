@@ -12,22 +12,29 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 import { useApp } from '../store/AppContext';
-import { MOCK_CARDS } from '../constants/mockData';
+import { useAuth } from '../store/AuthContext';
+import { getSavedTrends } from '../services/trendsStorage';
 import TrendCardComponent from '../components/TrendCard';
 import CardDetailModal from '../components/CardDetailModal';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { TrendCard } from '../constants/mockData';
 
 export default function ProfileScreen() {
   const { state } = useApp();
+  const { session } = useAuth();
   const router = useRouter();
   const { width } = useWindowDimensions();
   const [selectedCard, setSelectedCard] = useState<TrendCard | null>(null);
+  const [savedCards, setSavedCards] = useState<TrendCard[]>([]);
 
-  const savedCards = useMemo(
-    () => MOCK_CARDS.filter((c) => state.savedCardIds.includes(c.id)),
-    [state.savedCardIds]
-  );
+  useEffect(() => {
+    const userId = session?.user.id;
+    if (!userId) {
+      setSavedCards([]);
+      return;
+    }
+    getSavedTrends(userId).then(setSavedCards);
+  }, [session?.user.id, state.savedCardIds]);
 
   const numColumns = width >= 768 ? 3 : 2;
   const columns = useMemo(() => {

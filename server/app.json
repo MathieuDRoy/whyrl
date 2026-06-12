@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "a9839473-cf6d-4803-8354-5123fe47d812"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.mathieudroy.whyrlbackend",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    }
+  }
+}

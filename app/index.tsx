@@ -13,8 +13,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../constants/theme';
 import { TrendCard } from '../constants/mockData';
+import { getNumColumns, filterCards } from '../utils/feedUtils';
 import { useApp } from '../store/AppContext';
 import { useTrends } from '../hooks/useTrends';
+
+import AdCard from '../components/AdCard';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
@@ -29,31 +32,12 @@ export default function FeedScreen() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { cards: liveCards, loading, error, refresh } = useTrends();
 
-  const numColumns = useMemo(() => {
-    if (width >= 1200) return 4;
-    if (width >= 768) return 3;
-    return 2;
-  }, [width]);
+  const numColumns = useMemo(() => getNumColumns(width), [width]);
 
-  const filteredCards = useMemo(() => {
-    let cards = liveCards;
-
-    if (state.selectedCategory !== 'all') {
-      cards = cards.filter((c) => !c.isAd && c.category === state.selectedCategory);
-    }
-
-    if (state.searchQuery.trim()) {
-      const q = state.searchQuery.toLowerCase();
-      cards = cards.filter(
-        (c) =>
-          c.title.toLowerCase().includes(q) ||
-          c.summary.toLowerCase().includes(q) ||
-          c.hashtags.some((h) => h.toLowerCase().includes(q))
-      );
-    }
-
-    return cards;
-  }, [liveCards, state.selectedCategory, state.searchQuery]);
+  const filteredCards = useMemo(
+    () => filterCards(liveCards, state.selectedCategory, state.searchQuery),
+    [liveCards, state.selectedCategory, state.searchQuery],
+  );
 
   const columns = useMemo(() => {
     const cols: TrendCard[][] = Array.from({ length: numColumns }, () => []);
@@ -103,8 +87,11 @@ export default function FeedScreen() {
           <View style={styles.grid}>
             {columns.map((col, ci) => (
               <View key={ci} style={styles.column}>
-                {col.map((card) => (
-                  <TrendCardComponent key={card.id} card={card} onPress={() => setSelectedCard(card)} />
+                {col.map((card, rowIndex) => (
+                  <React.Fragment key={card.id}>
+                    <TrendCardComponent card={card} onPress={() => setSelectedCard(card)} />
+                    {(rowIndex + 1) % 5 === 0 && <AdCard slotIndex={ci * 10 + rowIndex} />}
+                  </React.Fragment>
                 ))}
               </View>
             ))}

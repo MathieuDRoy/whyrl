@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../store/AuthContext';
 import { theme } from '../constants/theme';
 
@@ -24,6 +25,7 @@ export default function AuthScreen() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit() {
     setError(null);
@@ -98,15 +100,28 @@ export default function AuthScreen() {
               keyboardType="email-address"
               textContentType="emailAddress"
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor={theme.colors.textMuted}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              textContentType={mode === 'signup' ? 'newPassword' : 'password'}
-            />
+            <View style={styles.passwordRow}>
+              <TextInput
+                style={styles.passwordInput}
+                placeholder="Password"
+                placeholderTextColor={theme.colors.textMuted}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                textContentType={mode === 'signup' ? 'newPassword' : 'password'}
+              />
+              <TouchableOpacity
+                style={styles.eyeBtn}
+                onPress={() => setShowPassword(v => !v)}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Ionicons
+                  name={showPassword ? 'eye-off' : 'eye'}
+                  size={20}
+                  color={theme.colors.textMuted}
+                />
+              </TouchableOpacity>
+            </View>
 
             {error && <Text style={styles.errorText}>{error}</Text>}
             {info && <Text style={styles.infoText}>{info}</Text>}
@@ -216,6 +231,24 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     color: theme.colors.textPrimary,
     fontSize: 15,
+  },
+  passwordRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.bg,
+    borderWidth: 1,
+    borderColor: theme.colors.surfaceBorder,
+    borderRadius: theme.radius.md,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    color: theme.colors.textPrimary,
+    fontSize: 15,
+  },
+  eyeBtn: {
+    paddingHorizontal: 14,
   },
   button: {
     backgroundColor: theme.colors.accent,

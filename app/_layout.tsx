@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import MobileAds from 'react-native-google-mobile-ads';
+import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { AppProvider } from '../store/AppContext';
 import { AuthProvider, useAuth } from '../store/AuthContext';
 import { PurchaseProvider } from '../store/PurchaseContext';
@@ -29,6 +31,13 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    (async () => {
+      await requestTrackingPermissionsAsync();
+      MobileAds().initialize();
+    })();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <AuthProvider>

@@ -29,7 +29,7 @@ type Action =
   | { type: 'LOAD_SAVED'; ids: string[] }
   | { type: 'UPGRADE_PLAN' };
 
-const initialState: AppState = {
+export const initialState: AppState = {
   savedCardIds: [],
   selectedCategory: 'all',
   searchQuery: '',
@@ -43,7 +43,7 @@ const initialState: AppState = {
   },
 };
 
-function reducer(state: AppState, action: Action): AppState {
+export function reducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'TOGGLE_SAVE': {
       const ids = state.savedCardIds.includes(action.id)

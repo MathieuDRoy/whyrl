@@ -16,6 +16,40 @@ export async function getSavedTrendIds(userId: string): Promise<string[]> {
   return data.map((r) => r.id);
 }
 
+export async function getSavedTrends(userId: string): Promise<TrendCard[]> {
+  const { data, error } = await supabase
+    .from('trends')
+    .select('id')
+    .eq('user_id', userId);
+
+  if (error) {
+    console.warn('[trendsStorage] getSavedTrends:', error.message);
+    return [];
+  }
+
+  const cards = await Promise.all(
+    data.map(async (row) => {
+      const { data: file, error: downloadError } = await supabase.storage
+        .from(BUCKET)
+        .download(`${userId}/${row.id}.json`);
+
+      if (downloadError || !file) {
+        console.warn('[trendsStorage] getSavedTrends download:', downloadError?.message);
+        return null;
+      }
+
+      try {
+        return JSON.parse(await file.text()) as TrendCard;
+      } catch (err: any) {
+        console.warn('[trendsStorage] getSavedTrends parse:', err?.message);
+        return null;
+      }
+    }),
+  );
+
+  return cards.filter((c): c is TrendCard => c !== null);
+}
+
 export async function saveTrend(userId: string, card: TrendCard): Promise<void> {
   const path = `${userId}/${card.id}.json`;
   const bytes = new TextEncoder().encode(JSON.stringify(card));

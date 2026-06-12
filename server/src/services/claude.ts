@@ -60,6 +60,7 @@ export async function analyzeTrends(
     .slice(0, 80);
 
   const userMessage = `
+Current time (UTC): ${new Date().toISOString()}
 Region: ${region}
 Requested categories: ${categories.join(', ')}
 
