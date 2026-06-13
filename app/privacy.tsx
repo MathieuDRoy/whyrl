@@ -24,7 +24,7 @@ export default function PrivacyPolicyScreen() {
         <Text style={styles.updated}>Last updated: {LAST_UPDATED}</Text>
 
         <Section title="1. Who We Are">
-          Whyrl ("we", "us", "our") is a news aggregation application that uses artificial intelligence to summarize trending topics. Our contact email is support@whyrl.app.
+          Whyrl ("we", "us", "our") is a news aggregation application that uses artificial intelligence to summarize trending topics. Our contact email is support@whyrl.online.
         </Section>
 
         <Section title="2. What Data We Collect">
@@ -63,7 +63,7 @@ export default function PrivacyPolicyScreen() {
         </Section>
 
         <Section title="8. Your Rights (Canadian Users)">
-          Under Canada's Personal Information Protection and Electronic Documents Act (PIPEDA), you have the right to access, correct, and request deletion of your personal data. To exercise these rights, contact us at support@whyrl.app.
+          Under Canada's Personal Information Protection and Electronic Documents Act (PIPEDA), you have the right to access, correct, and request deletion of your personal data. To exercise these rights, contact us at support@whyrl.online.
         </Section>
 
         <Section title="9. Children's Privacy">
@@ -75,7 +75,7 @@ export default function PrivacyPolicyScreen() {
         </Section>
 
         <Section title="11. Contact">
-          For privacy inquiries: support@whyrl.app
+          For privacy inquiries: support@whyrl.online
         </Section>
       </ScrollView>
     </SafeAreaView>

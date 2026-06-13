@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { usePurchase } from '../store/PurchaseContext';
@@ -17,8 +17,9 @@ interface Props {
 
 export default function AdCard({ slotIndex }: Props) {
   const { isPremium } = usePurchase();
+  const [failed, setFailed] = useState(false);
 
-  if (isPremium || Platform.OS === 'web') return null;
+  if (isPremium || Platform.OS === 'web' || failed) return null;
 
   return (
     <View style={styles.card}>
@@ -29,6 +30,11 @@ export default function AdCard({ slotIndex }: Props) {
         key={slotIndex}
         unitId={AD_UNIT_ID}
         size={BannerAdSize.MEDIUM_RECTANGLE}
+        onAdLoaded={() => console.log(`[AdCard ${slotIndex}] ad loaded`)}
+        onAdFailedToLoad={(error) => {
+          console.log(`[AdCard ${slotIndex}] failed to load:`, error);
+          setFailed(true);
+        }}
       />
     </View>
   );

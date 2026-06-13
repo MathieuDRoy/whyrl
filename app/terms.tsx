@@ -83,7 +83,7 @@ export default function TermsScreen() {
         </Section>
 
         <Section title="12. Contact">
-          For questions about these terms: support@whyrl.app
+          For questions about these terms: support@whyrl.online
         </Section>
       </ScrollView>
     </SafeAreaView>
