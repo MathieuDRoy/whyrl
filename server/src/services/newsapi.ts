@@ -56,6 +56,7 @@ async function fetchCategory(cat: Category, region: string): Promise<RawPost[]> 
       score: 0,
       comments: 0,
       source: 'newsapi' as const,
+      publishedAt: a.publishedAt,
     }));
   } catch (err: any) {
     console.warn(`[newsapi:${cat}] fetch error:`, err?.message);

@@ -14,7 +14,7 @@ Rules:
 - engagements = combined upvotes + comments from the raw posts.
 - hashtags: 2–4 relevant hashtags WITHOUT the # symbol.
 - Assign each card to exactly one category from: politics, finance, sport, entertainment, tech, world.
-- timestamp: ISO 8601 string (use current time if unavailable).
+- timestamp: ISO 8601 string. Use the PUBLISHED value from the source post(s) the card is based on (pick the most recent if multiple). Only fall back to current time if no post has a PUBLISHED value.
 - tall: set to true for roughly 1 in 3 cards to create visual variety.
 - Skip duplicates and low-quality posts (spam, memes with no news value).
 - Return ONLY valid JSON. No markdown. No explanation.`;
@@ -65,7 +65,7 @@ Region: ${region}
 Requested categories: ${categories.join(', ')}
 
 Raw posts to analyze (${topPosts.length} total):
-${topPosts.map((p, i) => `[${i + 1}] SOURCE:${p.source} SCORE:${p.score} COMMENTS:${p.comments}
+${topPosts.map((p, i) => `[${i + 1}] SOURCE:${p.source} SCORE:${p.score} COMMENTS:${p.comments} PUBLISHED:${p.publishedAt ?? 'unknown'}
 TITLE: ${p.title}
 BODY: ${p.body.slice(0, 300)}`).join('\n\n')}
 

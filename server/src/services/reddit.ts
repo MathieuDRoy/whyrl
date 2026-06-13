@@ -40,6 +40,7 @@ async function fetchSubreddit(subreddit: string, limit = 15): Promise<RawPost[]>
         comments: c.data.num_comments,
         subreddit: c.data.subreddit,
         source: 'reddit' as const,
+        publishedAt: c.data.created_utc ? new Date(c.data.created_utc * 1000).toISOString() : undefined,
       }));
     return posts;
   } catch {

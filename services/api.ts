@@ -1,8 +1,9 @@
 import { TrendCard } from '../constants/mockData';
 
-// Point this at your running backend.
-// On a physical device, replace localhost with your machine's local IP.
-const BASE_URL = 'http://192.168.4.113:3001';
+// Set EXPO_PUBLIC_API_URL (in .env or eas.json env) to point at your deployed
+// backend. Falls back to a local dev server — replace with your machine's
+// local IP when testing on a physical device.
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://192.168.4.113:3001';
 
 export async function fetchTrends(
   region: string,

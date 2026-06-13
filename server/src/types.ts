@@ -22,6 +22,7 @@ export interface RawPost {
   comments: number;
   subreddit?: string;
   source: 'newsapi' | 'reddit';
+  publishedAt?: string;
 }
 
 export interface TrendsQuery {

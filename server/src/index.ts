@@ -14,8 +14,8 @@ app.use(express.json());
 app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/trends', trendsRouter);
 
-app.listen(PORT, () => {
-  console.log(`Whyrl backend listening on http://localhost:${PORT}`);
+app.listen(Number(PORT), '0.0.0.0', () => {
+  console.log(`Whyrl backend listening on http://0.0.0.0:${PORT}`);
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('WARNING: ANTHROPIC_API_KEY is not set — Claude calls will fail');
   }
