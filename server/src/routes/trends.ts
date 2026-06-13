@@ -9,9 +9,9 @@ const router = Router();
 
 export const ALL_CATEGORIES: Category[] = ['politics', 'finance', 'sport', 'entertainment', 'tech', 'world'];
 
-export async function getTrends(region: string, categories: Category[]) {
+export async function getTrends(region: string, categories: Category[], force = false) {
   const cacheKey = `${region}:${[...categories].sort().join(',')}`;
-  const cached = trendsCache.get(cacheKey);
+  const cached = force ? null : trendsCache.get(cacheKey);
   if (cached) {
     console.log(`[cache] HIT for ${cacheKey}`);
     return { cards: cached, cached: true };

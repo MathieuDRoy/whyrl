@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MobileAds from 'react-native-google-mobile-ads';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
+import { registerForPushNotifications } from '../services/pushNotifications';
 import { AppProvider } from '../store/AppContext';
 import { AuthProvider, useAuth } from '../store/AuthContext';
 import { PurchaseProvider } from '../store/PurchaseContext';
@@ -35,6 +36,7 @@ export default function RootLayout() {
     (async () => {
       await requestTrackingPermissionsAsync();
       MobileAds().initialize();
+      registerForPushNotifications();
     })();
   }, []);
 
