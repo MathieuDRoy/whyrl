@@ -14,7 +14,7 @@ export async function fetchTrends(
     categories: categories.join(','),
   });
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 90_000); // 90s for Claude
+  const timeout = setTimeout(() => controller.abort(), 120_000); // 120s for Claude
   try {
     const res = await fetch(`${BASE_URL}/api/trends?${params}`, {
       signal: controller.signal,

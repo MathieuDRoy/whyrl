@@ -7,7 +7,33 @@ import { Category } from '../types';
 
 const router = Router();
 
-const ALL_CATEGORIES: Category[] = ['politics', 'finance', 'sport', 'entertainment', 'tech', 'world'];
+export const ALL_CATEGORIES: Category[] = ['politics', 'finance', 'sport', 'entertainment', 'tech', 'world'];
+
+export async function getTrends(region: string, categories: Category[]) {
+  const cacheKey = `${region}:${[...categories].sort().join(',')}`;
+  const cached = trendsCache.get(cacheKey);
+  if (cached) {
+    console.log(`[cache] HIT for ${cacheKey}`);
+    return { cards: cached, cached: true };
+  }
+
+  console.log(`[cache] MISS for ${cacheKey} — fetching fresh data`);
+  const [redditPosts, newsApiPosts] = await Promise.all([
+    fetchRedditPosts(categories, region),
+    fetchNewsApiPosts(categories, region),
+  ]);
+
+  const allPosts = [...newsApiPosts, ...redditPosts];
+  if (allPosts.length === 0) {
+    throw Object.assign(new Error('No posts fetched from sources'), { status: 503 });
+  }
+
+  console.log(`[sources] ${redditPosts.length} reddit + ${newsApiPosts.length} newsapi posts`);
+  const cards = await analyzeTrends(allPosts, region, categories);
+  trendsCache.set(cacheKey, cards);
+
+  return { cards, cached: false };
+}
 
 router.get('/', async (req: Request, res: Response) => {
   try {
@@ -22,34 +48,11 @@ router.get('/', async (req: Request, res: Response) => {
       return;
     }
 
-    const cacheKey = `${region}:${[...categories].sort().join(',')}`;
-    const cached = trendsCache.get(cacheKey);
-    if (cached) {
-      console.log(`[cache] HIT for ${cacheKey}`);
-      res.json({ cards: cached, cached: true });
-      return;
-    }
-
-    console.log(`[cache] MISS for ${cacheKey} — fetching fresh data`);
-    const [redditPosts, newsApiPosts] = await Promise.all([
-      fetchRedditPosts(categories, region),
-      fetchNewsApiPosts(categories, region),
-    ]);
-
-    const allPosts = [...newsApiPosts, ...redditPosts];
-    if (allPosts.length === 0) {
-      res.status(503).json({ error: 'No posts fetched from sources' });
-      return;
-    }
-
-    console.log(`[sources] ${redditPosts.length} reddit + ${newsApiPosts.length} newsapi posts`);
-    const cards = await analyzeTrends(allPosts, region, categories);
-    trendsCache.set(cacheKey, cards);
-
-    res.json({ cards, cached: false });
+    const result = await getTrends(region, categories);
+    res.json(result);
   } catch (err: any) {
     console.error('[/api/trends]', err?.message ?? err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(err?.status ?? 500).json({ error: err?.status ? err.message : 'Internal server error' });
   }
 });
 

@@ -31,4 +31,4 @@ class TTLCache<T> {
 }
 
 import { TrendCard } from './types';
-export const trendsCache = new TTLCache<TrendCard[]>(15);
+export const trendsCache = new TTLCache<TrendCard[]>(60);

@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 config({ path: path.join(__dirname, '..', '.env'), override: true });
 import express from 'express';
 import cors from 'cors';
-import trendsRouter from './routes/trends';
+import trendsRouter, { ALL_CATEGORIES, getTrends } from './routes/trends';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
@@ -19,4 +19,9 @@ app.listen(Number(PORT), '0.0.0.0', () => {
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('WARNING: ANTHROPIC_API_KEY is not set — Claude calls will fail');
   }
+
+  // Pre-warm the cache for the default view so the first user doesn't hit a cold miss.
+  getTrends('US', ALL_CATEGORIES).catch((err) =>
+    console.error('[prewarm] failed:', err?.message ?? err),
+  );
 });
