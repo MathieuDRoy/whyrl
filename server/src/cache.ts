@@ -31,5 +31,5 @@ class TTLCache<T> {
 }
 
 import { TrendCard } from './types';
-export const CACHE_TTL_MINUTES = 60;
+export const CACHE_TTL_MINUTES = 240;
 export const trendsCache = new TTLCache<TrendCard[]>(CACHE_TTL_MINUTES);
