@@ -20,7 +20,6 @@ const FREE_FEATURES = [
   { label: 'All 6 content categories', included: true },
   { label: 'Basic search', included: true },
   { label: 'Ad-free experience', included: false },
-  { label: 'Early access to breaking news', included: false },
   { label: 'Custom feed algorithm', included: false },
   { label: 'Unlimited saved stories', included: false },
   { label: 'Priority regional trends', included: false },
@@ -32,7 +31,6 @@ const PREMIUM_FEATURES = [
   { label: 'All 6 content categories', included: true },
   { label: 'Advanced search & filters', included: true },
   { label: 'Completely ad-free', included: true },
-  { label: 'Breaking news — 30 min ahead', included: true },
   { label: 'AI-personalized feed', included: true },
   { label: 'Unlimited saved stories', included: true },
   { label: 'All global regions', included: true },
@@ -68,7 +66,7 @@ export default function SubscriptionScreen() {
             <Text style={styles.heroEyebrow}>UPGRADE YOUR FEED</Text>
             <Text style={styles.heroTitle}>The premium news experience you deserve</Text>
             <Text style={styles.heroSubtitle}>
-              Go ad-free, unlock AI personalization, and get breaking news 30 minutes before everyone else.
+              Go ad-free and unlock AI personalization.
             </Text>
           </View>
         )}
