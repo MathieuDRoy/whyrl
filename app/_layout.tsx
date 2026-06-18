@@ -21,9 +21,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 
     const inAuthScreen = segments[0] === 'auth';
 
-    if (!session && !inAuthScreen) {
-      router.replace('/auth');
-    } else if (session && inAuthScreen) {
+    // Only redirect from auth screen to feed when already signed in.
+    // Guests can freely access the feed without an account.
+    if (session && inAuthScreen) {
       router.replace('/');
     }
   }, [session, loading, segments]);

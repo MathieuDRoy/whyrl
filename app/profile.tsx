@@ -65,6 +65,17 @@ export default function ProfileScreen() {
       </View>
 
       <ScrollView contentContainerStyle={[styles.content, { maxWidth: 900, alignSelf: 'center', width: '100%' }]}>
+        {!session ? (
+          <View style={styles.guestPrompt}>
+            <Ionicons name="person-circle-outline" size={56} color={theme.colors.textMuted} />
+            <Text style={styles.guestTitle}>Sign in to access your profile</Text>
+            <Text style={styles.guestSubtitle}>Save stories and manage your subscription</Text>
+            <TouchableOpacity style={styles.guestSignInBtn} onPress={() => router.push('/auth')}>
+              <Text style={styles.guestSignInText}>Sign In / Create Account</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
         <View style={styles.profileCard}>
           <View style={styles.avatarRing}>
             <View style={styles.avatar}>
@@ -115,6 +126,8 @@ export default function ProfileScreen() {
               </View>
             ))}
           </View>
+        )}
+          </>
         )}
       </ScrollView>
 
@@ -227,4 +240,30 @@ const styles = StyleSheet.create({
   browseBtnText: { color: '#000', fontSize: 14, fontWeight: '800' },
   grid: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   column: { flex: 1 },
+  guestPrompt: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 80,
+    gap: 12,
+  },
+  guestTitle: {
+    color: theme.colors.textPrimary,
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  guestSubtitle: {
+    color: theme.colors.textMuted,
+    fontSize: 13,
+    textAlign: 'center',
+    maxWidth: 260,
+  },
+  guestSignInBtn: {
+    marginTop: 8,
+    backgroundColor: theme.colors.accent,
+    paddingHorizontal: 28,
+    paddingVertical: 13,
+    borderRadius: theme.radius.full,
+  },
+  guestSignInText: { color: '#000', fontSize: 14, fontWeight: '800' },
 });

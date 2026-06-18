@@ -34,7 +34,6 @@ const PREMIUM_FEATURES = [
   { label: 'AI-personalized feed', included: true },
   { label: 'Unlimited saved stories', included: true },
   { label: 'All global regions', included: true },
-  { label: 'Developer API access', included: true },
 ];
 
 export default function SubscriptionScreen() {
@@ -147,8 +146,22 @@ export default function SubscriptionScreen() {
         )}
 
         <Text style={styles.legalText}>
-          Cancel anytime. No hidden fees. Secure payment via Stripe.
-          By upgrading you agree to our Terms of Service and Privacy Policy.
+          Cancel anytime. No hidden fees.{' '}
+          By upgrading you agree to our{' '}
+          <Text
+            style={styles.legalLink}
+            onPress={() => router.push('/terms')}
+          >
+            Terms of Service
+          </Text>
+          {' and '}
+          <Text
+            style={styles.legalLink}
+            onPress={() => router.push('/privacy')}
+          >
+            Privacy Policy
+          </Text>
+          .
         </Text>
       </ScrollView>
     </SafeAreaView>
@@ -287,5 +300,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
     paddingHorizontal: 8,
+  },
+  legalLink: {
+    color: theme.colors.accent,
+    textDecorationLine: 'underline',
   },
 });

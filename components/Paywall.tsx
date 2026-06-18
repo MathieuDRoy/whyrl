@@ -11,13 +11,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 import { usePurchase } from '../store/PurchaseContext';
 
 const FEATURES = [
   { icon: 'ban-outline', label: 'Completely ad-free experience' },
   { icon: 'sparkles-outline', label: 'AI-personalized trend feed' },
-  { icon: 'flash-outline', label: 'Breaking news 30 minutes early' },
   { icon: 'bookmark-outline', label: 'Unlimited saved stories' },
   { icon: 'globe-outline', label: 'All global regions' },
 ];
@@ -31,6 +31,7 @@ export default function Paywall() {
     purchasing,
     purchaseError,
   } = usePurchase();
+  const router = useRouter();
 
   return (
     <Modal
@@ -124,7 +125,20 @@ export default function Paywall() {
           <Text style={styles.legal}>
             Payment will be charged to your account at confirmation of purchase. Subscription
             renews automatically unless cancelled at least 24 hours before the end of the current
-            period. You can manage or cancel in your account settings.
+            period. You can manage or cancel in your account settings.{' '}
+            <Text
+              style={styles.legalLink}
+              onPress={() => { hidePaywall(); router.push('/terms'); }}
+            >
+              Terms of Use
+            </Text>
+            {' · '}
+            <Text
+              style={styles.legalLink}
+              onPress={() => { hidePaywall(); router.push('/privacy'); }}
+            >
+              Privacy Policy
+            </Text>
           </Text>
         </ScrollView>
       </SafeAreaView>
@@ -296,5 +310,9 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'center',
     lineHeight: 15,
+  },
+  legalLink: {
+    color: theme.colors.accent,
+    textDecorationLine: 'underline',
   },
 });

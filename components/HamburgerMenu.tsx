@@ -58,11 +58,11 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
             {/* Profile section */}
             <View style={styles.profileSection}>
               <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{initials}</Text>
+                <Text style={styles.avatarText}>{session ? initials : 'G'}</Text>
               </View>
               <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>{state.user.name}</Text>
-                <Text style={styles.profileEmail}>{session?.user.email ?? state.user.email}</Text>
+                <Text style={styles.profileName}>{session ? state.user.name : 'Guest'}</Text>
+                <Text style={styles.profileEmail}>{session?.user.email ?? 'Not signed in'}</Text>
                 <View style={styles.planBadge}>
                   <Ionicons
                     name={state.user.plan === 'premium' ? 'star' : 'star-outline'}
@@ -132,10 +132,17 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
             )}
 
             <View style={styles.footer}>
-              <TouchableOpacity style={styles.signOutBtn} onPress={() => { onClose(); signOut(); }}>
-                <Ionicons name="log-out-outline" size={16} color={theme.colors.textMuted} />
-                <Text style={styles.signOutText}>Sign Out</Text>
-              </TouchableOpacity>
+              {session ? (
+                <TouchableOpacity style={styles.signOutBtn} onPress={() => { onClose(); signOut(); }}>
+                  <Ionicons name="log-out-outline" size={16} color={theme.colors.textMuted} />
+                  <Text style={styles.signOutText}>Sign Out</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.signOutBtn} onPress={() => navigate('/auth')}>
+                  <Ionicons name="log-in-outline" size={16} color={theme.colors.textMuted} />
+                  <Text style={styles.signOutText}>Sign In / Create Account</Text>
+                </TouchableOpacity>
+              )}
               <Text style={styles.versionText}>Whyrl v1.0.0</Text>
             </View>
           </ScrollView>

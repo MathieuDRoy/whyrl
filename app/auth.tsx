@@ -13,12 +13,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../store/AuthContext';
+import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 
 type Mode = 'signin' | 'signup';
 
 export default function AuthScreen() {
   const { signIn, signUp } = useAuth();
+  const router = useRouter();
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -140,6 +142,12 @@ export default function AuthScreen() {
               )}
             </TouchableOpacity>
           </View>
+          <TouchableOpacity
+            style={styles.guestBtn}
+            onPress={() => router.replace('/')}
+          >
+            <Text style={styles.guestText}>Continue without signing in</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -274,5 +282,15 @@ const styles = StyleSheet.create({
     color: theme.colors.accent,
     fontSize: 13,
     textAlign: 'center',
+  },
+  guestBtn: {
+    marginTop: 20,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  guestText: {
+    color: theme.colors.textMuted,
+    fontSize: 14,
+    textDecorationLine: 'underline',
   },
 });
