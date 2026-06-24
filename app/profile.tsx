@@ -51,7 +51,6 @@ export default function ProfileScreen() {
   const stats = [
     { label: 'Saved', value: savedCards.length, icon: 'bookmark' },
     { label: 'Streak', value: '7 days', icon: 'flame' },
-    { label: 'Plan', value: state.user.plan === 'premium' ? 'Premium' : 'Free', icon: 'star' },
   ];
 
   return (
@@ -69,7 +68,7 @@ export default function ProfileScreen() {
           <View style={styles.guestPrompt}>
             <Ionicons name="person-circle-outline" size={56} color={theme.colors.textMuted} />
             <Text style={styles.guestTitle}>Sign in to access your profile</Text>
-            <Text style={styles.guestSubtitle}>Save stories and manage your subscription</Text>
+            <Text style={styles.guestSubtitle}>Sign in to save stories and track your reading streak</Text>
             <TouchableOpacity style={styles.guestSignInBtn} onPress={() => router.push('/auth')}>
               <Text style={styles.guestSignInText}>Sign In / Create Account</Text>
             </TouchableOpacity>

@@ -5,8 +5,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../constants/theme';
 import { TrendCard as TrendCardType } from '../constants/mockData';
 import { useApp } from '../store/AppContext';
-import { usePurchase } from '../store/PurchaseContext';
-
 interface Props {
   card: TrendCardType;
   onPress: () => void;
@@ -14,7 +12,6 @@ interface Props {
 
 export default function TrendCard({ card, onPress }: Props) {
   const { state, toggleSave } = useApp();
-  const { showPaywall } = usePurchase();
   const saved = state.savedCardIds.includes(card.id);
 
   if (card.isAd) {
@@ -40,10 +37,6 @@ export default function TrendCard({ card, onPress }: Props) {
             <Text style={styles.adCtaText}>{card.adCta}</Text>
             <Ionicons name="arrow-forward" size={12} color="#000" />
           </View>
-          <TouchableOpacity style={styles.removeAdsBtn} onPress={showPaywall}>
-            <Ionicons name="ban-outline" size={11} color={theme.colors.textMuted} />
-            <Text style={styles.removeAdsText}>Remove Ads</Text>
-          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );

@@ -63,16 +63,6 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
               <View style={styles.profileInfo}>
                 <Text style={styles.profileName}>{session ? state.user.name : 'Guest'}</Text>
                 <Text style={styles.profileEmail}>{session?.user.email ?? 'Not signed in'}</Text>
-                <View style={styles.planBadge}>
-                  <Ionicons
-                    name={state.user.plan === 'premium' ? 'star' : 'star-outline'}
-                    size={10}
-                    color={state.user.plan === 'premium' ? '#FFD93D' : theme.colors.textMuted}
-                  />
-                  <Text style={[styles.planText, state.user.plan === 'premium' && { color: '#FFD93D' }]}>
-                    {state.user.plan === 'premium' ? 'Premium' : 'Free Plan'}
-                  </Text>
-                </View>
               </View>
             </View>
 
@@ -89,13 +79,6 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
               label="Preferences"
               onPress={() => navigate('/settings')}
             />
-            <MenuItem
-              icon="star-outline"
-              label="Subscription"
-              highlight={state.user.plan === 'free'}
-              onPress={() => navigate('/subscription')}
-            />
-
             <View style={styles.divider} />
 
             {/* Region picker */}
@@ -117,19 +100,6 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
             </View>
 
             <View style={styles.divider} />
-
-            {state.user.plan === 'free' && (
-              <TouchableOpacity style={styles.upgradeCard} onPress={() => navigate('/subscription')}>
-                <View style={styles.upgradeIcon}>
-                  <Ionicons name="flash" size={18} color="#000" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.upgradeTitle}>Go Premium</Text>
-                  <Text style={styles.upgradeSubtitle}>Ad-free, early access & custom feeds</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={16} color={theme.colors.accent} />
-              </TouchableOpacity>
-            )}
 
             <View style={styles.footer}>
               {session ? (

@@ -8,7 +8,6 @@ import { registerForPushNotifications } from '../services/pushNotifications';
 import { AppProvider } from '../store/AppContext';
 import { AuthProvider, useAuth } from '../store/AuthContext';
 import { PurchaseProvider } from '../store/PurchaseContext';
-import Paywall from '../components/Paywall';
 import { theme } from '../constants/theme';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
@@ -54,7 +53,6 @@ export default function RootLayout() {
                   animation: 'slide_from_right',
                 }}
               />
-              <Paywall />
             </AuthGate>
           </AppProvider>
         </PurchaseProvider>
