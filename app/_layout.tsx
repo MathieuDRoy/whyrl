@@ -11,21 +11,27 @@ import { PurchaseProvider } from '../store/PurchaseContext';
 import { theme } from '../constants/theme';
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, loading, profile, profileLoading } = useAuth();
   const router = useRouter();
   const segments = useSegments();
 
   useEffect(() => {
-    if (loading) return;
+    if (loading || profileLoading) return;
 
     const inAuthScreen = segments[0] === 'auth';
+    const inOnboarding = segments[0] === 'onboarding';
 
-    // Only redirect from auth screen to feed when already signed in.
-    // Guests can freely access the feed without an account.
-    if (session && inAuthScreen) {
-      router.replace('/');
+    if (!session) {
+      // Not signed in — must go to auth
+      if (!inAuthScreen) router.replace('/auth');
+    } else if (!profile) {
+      // Signed in but no profile — complete onboarding first
+      if (!inOnboarding) router.replace('/onboarding');
+    } else {
+      // Fully set up — go to feed if on auth/onboarding
+      if (inAuthScreen || inOnboarding) router.replace('/');
     }
-  }, [session, loading, segments]);
+  }, [session, loading, profile, profileLoading, segments]);
 
   return <>{children}</>;
 }

@@ -26,7 +26,7 @@ const DRAWER_W = Math.min(SCREEN_W * 0.82, 320);
 
 export default function HamburgerMenu({ visible, onClose }: Props) {
   const { state, dispatch } = useApp();
-  const { session, signOut } = useAuth();
+  const { session, profile, signOut } = useAuth();
   const router = useRouter();
   const slideAnim = useRef(new Animated.Value(DRAWER_W)).current;
 
@@ -44,10 +44,13 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
     setTimeout(() => router.push(path as any), 200);
   };
 
-  const initials = state.user.name
+  const displayName = profile?.name ?? '';
+  const initials = displayName
     .split(' ')
     .map((n) => n[0])
-    .join('');
+    .filter(Boolean)
+    .join('')
+    .toUpperCase() || '?';
 
   return (
     <Modal visible={visible} transparent animationType="none" onRequestClose={onClose}>
@@ -61,7 +64,7 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
                 <Text style={styles.avatarText}>{session ? initials : 'G'}</Text>
               </View>
               <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>{session ? state.user.name : 'Guest'}</Text>
+                <Text style={styles.profileName}>{session ? displayName : 'Guest'}</Text>
                 <Text style={styles.profileEmail}>{session?.user.email ?? 'Not signed in'}</Text>
               </View>
             </View>

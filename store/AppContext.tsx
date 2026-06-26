@@ -4,6 +4,7 @@ import { TrendCard } from '../constants/mockData';
 import { useAuth } from './AuthContext';
 import { getSavedTrendIds, saveTrend, deleteTrend } from '../services/trendsStorage';
 
+
 export type FilterCategory = Category | 'all';
 
 export interface AppState {
@@ -76,8 +77,15 @@ const AppContext = createContext<{
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   const userId = session?.user.id;
+
+  // Apply the user's saved country preference as the active region on login
+  useEffect(() => {
+    if (profile?.country) {
+      dispatch({ type: 'SET_REGION', region: profile.country });
+    }
+  }, [profile?.country]);
 
   // Load saved IDs from Supabase whenever the logged-in user changes
   useEffect(() => {
