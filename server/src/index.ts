@@ -30,7 +30,7 @@ async function refreshAndNotify(force: boolean) {
     await sendPushNotifications(
       getPushTokens(),
       ‘Whyrl’,
-      ‘Fresh trends just dropped — check out what’s new.’,
+      "Fresh trends just dropped - check out what’s new.",
     );
   } catch (err: any) {
     console.error(‘[refresh] failed:’, err?.message ?? err);
