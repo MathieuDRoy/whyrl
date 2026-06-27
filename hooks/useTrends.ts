@@ -23,8 +23,15 @@ export function useTrends(): UseTrendsResult {
       const fresh = await fetchTrends(state.region, state.preferredCategories);
       setCards(fresh);
     } catch (err: any) {
-      console.warn('[useTrends] failed to fetch trends:', err?.message);
-      setError('Could not reach server');
+      const msg: string = err?.message ?? '';
+      console.warn('[useTrends] failed to fetch trends:', msg);
+      if (msg.startsWith('Backend error')) {
+        setError('Server error — tap to retry');
+      } else if (msg.includes('aborted') || msg.includes('timeout')) {
+        setError('Request timed out — tap to retry');
+      } else {
+        setError('Could not reach server — tap to retry');
+      }
     } finally {
       setLoading(false);
     }

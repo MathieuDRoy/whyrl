@@ -11,10 +11,14 @@ const CATEGORY_SUBREDDITS: Record<Category, string[]> = {
 
 const REGION_SUBREDDITS: Record<string, string[]> = {
   US: ['unitedstates', 'USNews'],
-  UK: ['unitedkingdom', 'britishpolitics'],
-  EU: ['europe', 'europeanunion'],
-  AU: ['australia'],
-  CA: ['canada'],
+  GB: ['unitedkingdom', 'britishpolitics', 'uknews'],
+  CA: ['canada', 'canadanews'],
+  AU: ['australia', 'australian'],
+  DE: ['germany', 'de'],
+  FR: ['france', 'french'],
+  JP: ['japan', 'newsokur'],
+  BR: ['brazil', 'brasil'],
+  IN: ['india', 'indianews'],
   GLOBAL: [],
 };
 
