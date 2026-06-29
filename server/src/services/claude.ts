@@ -54,10 +54,10 @@ export async function analyzeTrends(
   region: string,
   categories: Category[],
 ): Promise<TrendCard[]> {
-  // Sort by engagement and cap at 40 to keep the prompt size manageable
+  // Sort by engagement and cap at 60 to keep the prompt size manageable
   const topPosts = [...posts]
     .sort((a, b) => (b.score + b.comments) - (a.score + a.comments))
-    .slice(0, 80);
+    .slice(0, 60);
 
   const userMessage = `
 Current time (UTC): ${new Date().toISOString()}
@@ -69,15 +69,14 @@ ${topPosts.map((p, i) => `[${i + 1}] SOURCE:${p.source} SCORE:${p.score} COMMENT
 TITLE: ${p.title}
 BODY: ${p.body.slice(0, 300)}`).join('\n\n')}
 
-Return up to 30 trend cards as JSON matching the schema. Use region "${region}" on all cards.`;
+Return up to 25 trend cards as JSON matching the schema. Use region "${region}" on all cards.`;
 
   // Cast to any: SDK v0.40 types predate `thinking: adaptive` and `output_config`.
   // Both are supported by the API at runtime — this lets the build succeed until
   // the SDK ships updated type definitions.
   const response = await (client.messages.create as any)({
-    model: 'claude-opus-4-7',
-    max_tokens: 16000,
-    thinking: { type: 'adaptive' },
+    model: 'claude-sonnet-4-6',
+    max_tokens: 10000,
     system: [
       {
         type: 'text',
