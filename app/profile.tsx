@@ -16,6 +16,7 @@ import { theme } from '../constants/theme';
 import { useApp } from '../store/AppContext';
 import { useAuth } from '../store/AuthContext';
 import { getSavedTrends } from '../services/trendsStorage';
+import { recordVisit, StreakData } from '../services/streakStorage';
 import TrendCardComponent from '../components/TrendCard';
 import CardDetailModal from '../components/CardDetailModal';
 import { TrendCard } from '../constants/mockData';
@@ -27,6 +28,7 @@ export default function ProfileScreen() {
   const { width } = useWindowDimensions();
   const [selectedCard, setSelectedCard] = useState<TrendCard | null>(null);
   const [savedCards, setSavedCards] = useState<TrendCard[]>([]);
+  const [streak, setStreak] = useState<StreakData>({ currentStreak: 0, lastActiveDate: '' });
 
   // Name editing state
   const [editing, setEditing] = useState(false);
@@ -41,6 +43,7 @@ export default function ProfileScreen() {
       return;
     }
     getSavedTrends(userId).then(setSavedCards);
+    recordVisit(userId).then(setStreak);
   }, [session?.user.id, state.savedCardIds]);
 
   const displayName = profile?.name ?? '';
@@ -88,7 +91,7 @@ export default function ProfileScreen() {
 
   const stats = [
     { label: 'Saved', value: savedCards.length, icon: 'bookmark' },
-    { label: 'Streak', value: '7 days', icon: 'flame' },
+    { label: 'Streak', value: streak.currentStreak === 1 ? '1 day' : streak.currentStreak + ' days', icon: 'flame' },
   ];
 
   return (
