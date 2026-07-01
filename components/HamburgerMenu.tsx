@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   avatarText: {
     color: theme.colors.accent,
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
   },
   profileInfo: {
     flex: 1,
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   profileName: {
     color: theme.colors.textPrimary,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   profileEmail: {
     color: theme.colors.textMuted,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   planText: {
     color: theme.colors.textMuted,
     fontSize: 11,
-    fontWeight: '600',
+    fontWeight: '600', fontFamily: theme.fonts.semiBold,
   },
   divider: {
     height: 1,
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   menuLabel: {
     color: theme.colors.textPrimary,
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '500', fontFamily: theme.fonts.medium,
   },
   newBadge: {
     backgroundColor: theme.colors.accentDim,
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   newBadgeText: {
     color: theme.colors.accent,
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 0.8,
   },
   sectionHeader: {
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     color: theme.colors.textMuted,
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 1.5,
   },
   regionGrid: {
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   regionChipText: {
     color: theme.colors.textSecondary,
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '500', fontFamily: theme.fonts.medium,
   },
   upgradeCard: {
     flexDirection: 'row',
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   upgradeTitle: {
     color: theme.colors.accent,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   upgradeSubtitle: {
     color: theme.colors.textSecondary,

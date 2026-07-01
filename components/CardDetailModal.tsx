@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 1.2,
   },
   sourceBadge: {
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   sourceText: {
     color: theme.colors.textSecondary,
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '500', fontFamily: theme.fonts.medium,
   },
   regionText: {
     color: theme.colors.textSecondary,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.textPrimary,
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     lineHeight: 30,
     letterSpacing: -0.5,
     marginBottom: 12,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   },
   trendText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   trendBar: {
     height: 3,
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   hashtagsLabel: {
     color: theme.colors.textMuted,
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 1.5,
     marginBottom: 8,
   },
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   },
   hashtagText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '600', fontFamily: theme.fonts.semiBold,
   },
   engagementRow: {
     flexDirection: 'row',
@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
   engagementValue: {
     color: theme.colors.textPrimary,
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
   },
   engagementLabel: {
     color: theme.colors.textMuted,

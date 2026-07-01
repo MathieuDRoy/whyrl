@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
   logoMarkText: {
     color: '#000',
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     letterSpacing: -0.5,
   },
   wordmark: {
     color: theme.colors.textPrimary,
     fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     letterSpacing: 3,
   },
   tagPill: {
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   tagText: {
     color: theme.colors.accent,
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 1,
   },
   menuBtn: {

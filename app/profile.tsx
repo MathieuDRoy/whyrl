@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: theme.colors.textPrimary,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 0.3,
   },
   content: { paddingHorizontal: 12, paddingBottom: 40 },
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { color: theme.colors.accent, fontSize: 26, fontWeight: '800' },
+  avatarText: { color: theme.colors.accent, fontSize: 26, fontWeight: '800', fontFamily: theme.fonts.extraBold },
   nameRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   userName: {
     color: theme.colors.textPrimary,
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
   },
   userEmail: { color: theme.colors.textMuted, fontSize: 13, marginBottom: 20 },
   editRow: {
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     color: theme.colors.textPrimary,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     textAlign: 'center',
   },
   editActions: {
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   cancelBtnText: {
     color: theme.colors.textSecondary,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '600', fontFamily: theme.fonts.semiBold,
   },
   saveBtn: {
     paddingHorizontal: 20,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   saveBtnText: {
     color: theme.colors.bg,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   nameError: {
     color: '#FF6B6B',
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: theme.colors.surfaceBorder,
   },
-  statValue: { color: theme.colors.textPrimary, fontSize: 16, fontWeight: '800', marginBottom: 2 },
+  statValue: { color: theme.colors.textPrimary, fontSize: 16, fontWeight: '800', fontFamily: theme.fonts.extraBold, marginBottom: 2 },
   statLabel: { color: theme.colors.textMuted, fontSize: 11, letterSpacing: 0.3 },
   sectionHeader: {
     flexDirection: 'row',
@@ -376,18 +376,18 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingHorizontal: 2,
   },
-  sectionTitle: { color: theme.colors.textPrimary, fontSize: 16, fontWeight: '700', flex: 1 },
+  sectionTitle: { color: theme.colors.textPrimary, fontSize: 16, fontWeight: '700', fontFamily: theme.fonts.bold, flex: 1 },
   sectionCount: {
     color: theme.colors.accent,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     backgroundColor: theme.colors.accentDim,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: theme.radius.full,
   },
   emptyState: { alignItems: 'center', paddingVertical: 60, gap: 10 },
-  emptyTitle: { color: theme.colors.textSecondary, fontSize: 17, fontWeight: '700' },
+  emptyTitle: { color: theme.colors.textSecondary, fontSize: 17, fontWeight: '700', fontFamily: theme.fonts.bold },
   emptySubtitle: {
     color: theme.colors.textMuted,
     fontSize: 13,
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: theme.radius.full,
   },
-  browseBtnText: { color: '#000', fontSize: 14, fontWeight: '800' },
+  browseBtnText: { color: '#000', fontSize: 14, fontWeight: '800', fontFamily: theme.fonts.extraBold },
   grid: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   column: { flex: 1 },
   guestPrompt: {
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   guestTitle: {
     color: theme.colors.textPrimary,
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     textAlign: 'center',
   },
   guestSubtitle: {
@@ -429,5 +429,5 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     borderRadius: theme.radius.full,
   },
-  guestSignInText: { color: '#000', fontSize: 14, fontWeight: '800' },
+  guestSignInText: { color: '#000', fontSize: 14, fontWeight: '800', fontFamily: theme.fonts.extraBold },
 });

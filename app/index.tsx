@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   emptyTitle: {
     color: theme.colors.textSecondary,
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   emptySubtitle: {
     color: theme.colors.textMuted,
@@ -207,6 +207,6 @@ const styles = StyleSheet.create({
   retryText: {
     color: theme.colors.accent,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
 });

@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   badgeText: {
     color: theme.colors.textMuted,
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 1,
   },
 });

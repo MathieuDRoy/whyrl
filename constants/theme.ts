@@ -1,4 +1,12 @@
 export const theme = {
+  fonts: {
+    regular: 'Manrope_400Regular',
+    medium: 'Manrope_500Medium',
+    semiBold: 'Manrope_600SemiBold',
+    bold: 'Manrope_700Bold',
+    extraBold: 'Manrope_800ExtraBold',
+  },
+
   colors: {
     bg: '#0A0A0A',
     surface: '#111111',

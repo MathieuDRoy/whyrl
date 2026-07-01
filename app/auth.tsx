@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.accent,
     color: theme.colors.bg,
     fontSize: 36,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     textAlign: 'center',
     lineHeight: 64,
     overflow: 'hidden',
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   appName: {
     color: theme.colors.textPrimary,
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: -0.5,
   },
   tagline: {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   toggleText: {
     color: theme.colors.textSecondary,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '600', fontFamily: theme.fonts.semiBold,
   },
   toggleTextActive: {
     color: theme.colors.textPrimary,
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: theme.colors.bg,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   errorText: {
     color: '#FF6B6B',

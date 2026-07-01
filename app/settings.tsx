@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: theme.colors.textPrimary,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 0.3,
   },
   content: { padding: 16, paddingBottom: 48 },
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   sectionLabelText: {
     color: theme.colors.textMuted,
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 1.5,
   },
   card: {
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.surfaceBorder,
   },
   catEmoji: { fontSize: 16 },
-  catLabel: { color: theme.colors.textSecondary, fontSize: 14, fontWeight: '500', flex: 1 },
+  catLabel: { color: theme.colors.textSecondary, fontSize: 14, fontWeight: '500', fontFamily: theme.fonts.medium, flex: 1 },
   regionRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   toggleDivider: { height: 1, backgroundColor: theme.colors.surfaceBorder, marginHorizontal: 16 },
-  toggleLabel: { color: theme.colors.textPrimary, fontSize: 14, fontWeight: '500', marginBottom: 2 },
+  toggleLabel: { color: theme.colors.textPrimary, fontSize: 14, fontWeight: '500', fontFamily: theme.fonts.medium, marginBottom: 2 },
   toggleSublabel: { color: theme.colors.textMuted, fontSize: 12 },
   linkRow: {
     flexDirection: 'row',

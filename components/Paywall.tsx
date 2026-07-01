@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
   logoText: {
     color: theme.colors.bg,
     fontSize: 36,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
   },
   heroTitle: {
     color: theme.colors.textPrimary,
     fontSize: 28,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     letterSpacing: -0.5,
   },
   heroSubtitle: {
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   featureText: {
     color: theme.colors.textPrimary,
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '500', fontFamily: theme.fonts.medium,
     flex: 1,
   },
   priceCard: {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   planLabel: {
     color: theme.colors.accent,
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 1.5,
     marginBottom: 4,
   },
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   priceAmount: {
     color: theme.colors.accent,
     fontSize: 34,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     lineHeight: 38,
   },
   pricePeriod: {
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   ctaBtnText: {
     color: '#000',
     fontSize: 16,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     letterSpacing: 0.2,
   },
   restoreBtn: {
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   restoreText: {
     color: theme.colors.textSecondary,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '500', fontFamily: theme.fonts.medium,
   },
   legal: {
     color: theme.colors.textMuted,

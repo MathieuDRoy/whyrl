@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   categoryText: {
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 1,
   },
   sourceBadge: {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   trendScore: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   cardBody: {
     padding: 12,
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   titleText: {
     color: theme.colors.textPrimary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     lineHeight: 19,
     letterSpacing: -0.2,
   },
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   adBadgeText: {
     color: '#FFD93D',
     fontSize: 9,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 1,
   },
   adGradient: {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   adTitle: {
     color: '#FFD93D',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     lineHeight: 19,
     letterSpacing: -0.2,
   },
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   removeAdsText: {
     color: theme.colors.textMuted,
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '500', fontFamily: theme.fonts.medium,
   },
   adCtaBtn: {
     flexDirection: 'row',
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   adCtaText: {
     color: '#000',
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 0.3,
   },
 });

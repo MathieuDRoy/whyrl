@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.accent,
     color: theme.colors.bg,
     fontSize: 36,
-    fontWeight: '900',
+    fontWeight: '900', fontFamily: theme.fonts.extraBold,
     textAlign: 'center',
     lineHeight: 64,
     overflow: 'hidden',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   title: {
     color: theme.colors.textPrimary,
     fontSize: 28,
-    fontWeight: '800',
+    fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: -0.5,
   },
   subtitle: {
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   label: {
     color: theme.colors.textPrimary,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     marginBottom: 2,
   },
   hint: {
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   regionText: {
     color: theme.colors.textSecondary,
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '600', fontFamily: theme.fonts.semiBold,
   },
   regionTextActive: {
     color: theme.colors.accent,
@@ -218,6 +218,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: theme.colors.bg,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
   },
 });

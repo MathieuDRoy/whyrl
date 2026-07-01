@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   label: {
     color: theme.colors.textSecondary,
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '600', fontFamily: theme.fonts.semiBold,
     letterSpacing: 0.2,
   },
 });

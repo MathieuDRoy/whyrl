@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: theme.colors.textPrimary,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 0.3,
   },
   content: {
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: theme.colors.textPrimary,
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     marginBottom: 8,
   },
   sectionBody: {
