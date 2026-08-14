@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 
-const LAST_UPDATED = 'June 23, 2026';
+const LAST_UPDATED = 'August 13, 2026';
 
 export default function PrivacyPolicyScreen() {
   const router = useRouter();
@@ -29,14 +29,20 @@ export default function PrivacyPolicyScreen() {
 
         <Section title="2. What Data We Collect">
           <Bullet>Email address — collected when you create an account, used solely for authentication via Supabase.</Bullet>
+          <Bullet>Profile data — your display name and country, stored so your preferences follow you across devices.</Bullet>
+          <Bullet>Saved stories — the trend cards you save are stored under your account so you can revisit them later.</Bullet>
+          <Bullet>Streak activity — your current daily-use streak and the date you were last active, used to power the streak feature.</Bullet>
           <Bullet>Usage data — anonymous analytics on which categories and regions you view, to improve content relevance.</Bullet>
+          <Bullet>Purchase data — subscription status managed by RevenueCat. We do not store payment card details.</Bullet>
           <Bullet>Device identifiers — collected by Google AdMob for ad serving. See Section 5 for details.</Bullet>
         </Section>
 
         <Section title="3. How We Use Your Data">
           <Bullet>To authenticate you and maintain your session.</Bullet>
           <Bullet>To remember your preferences (categories, region, saved cards) across devices.</Bullet>
-          <Bullet>To serve relevant advertisements.</Bullet>
+          <Bullet>To track and display your daily-use streak.</Bullet>
+          <Bullet>To manage your premium subscription status.</Bullet>
+          <Bullet>To serve relevant advertisements to free-tier users.</Bullet>
           We do not sell your personal data to third parties.
         </Section>
 
@@ -50,6 +56,7 @@ export default function PrivacyPolicyScreen() {
 
         <Section title="6. Third-Party Services">
           <Bullet>Supabase — authentication and user data storage (supabase.com/privacy)</Bullet>
+          <Bullet>RevenueCat — subscription management (revenuecat.com/privacy)</Bullet>
           <Bullet>Google AdMob — advertising (policies.google.com/privacy)</Bullet>
           <Bullet>Anthropic Claude — AI summarization (anthropic.com/privacy)</Bullet>
           <Bullet>NewsAPI — news headlines (newsapi.org/privacy)</Bullet>
