@@ -60,8 +60,6 @@ export async function saveTrend(userId: string, card: TrendCard): Promise<void> 
 
   if (uploadError) throw new Error(`Storage upload failed: ${uploadError.message}`);
 
-  const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
-
   const { error: dbError } = await supabase.from('trends').upsert({
     id: card.id,
     user_id: userId,
@@ -69,7 +67,6 @@ export async function saveTrend(userId: string, card: TrendCard): Promise<void> 
     country: card.region,
     date: card.timestamp,
     category: card.category,
-    storage_url: urlData.publicUrl,
   });
 
   if (dbError) throw new Error(`DB insert failed: ${dbError.message}`);

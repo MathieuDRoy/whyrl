@@ -6,19 +6,48 @@ import {
   TouchableOpacity,
   StyleSheet,
   Switch,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { theme, CATEGORIES, REGIONS, Category } from '../constants/theme';
 import { useApp } from '../store/AppContext';
+import { useAuth } from '../store/AuthContext';
 
 export default function SettingsScreen() {
   const { state, dispatch } = useApp();
+  const { deleteAccount } = useAuth();
   const router = useRouter();
   const [notifications, setNotifications] = useState(true);
   const [breakingAlerts, setBreakingAlerts] = useState(true);
   const [weeklyDigest, setWeeklyDigest] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const confirmDeleteAccount = () => {
+    Alert.alert(
+      'Delete Account',
+      'This permanently deletes your account, saved stories, and preferences. This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            setDeleting(true);
+            const err = await deleteAccount();
+            setDeleting(false);
+            if (err) {
+              Alert.alert('Couldn’t delete account', err);
+              return;
+            }
+            router.replace('/');
+          },
+        },
+      ],
+    );
+  };
 
   const toggleCategory = (cat: Category) => {
     const current = state.preferredCategories;
@@ -123,9 +152,13 @@ export default function SettingsScreen() {
             <Ionicons name="chevron-forward" size={16} color={theme.colors.textMuted} />
           </TouchableOpacity>
           <View style={styles.toggleDivider} />
-          <TouchableOpacity style={styles.linkRow}>
+          <TouchableOpacity style={styles.linkRow} onPress={confirmDeleteAccount} disabled={deleting}>
             <Text style={[styles.linkLabel, { color: '#FF6B6B' }]}>Delete Account</Text>
-            <Ionicons name="chevron-forward" size={16} color="#FF6B6B" />
+            {deleting ? (
+              <ActivityIndicator size="small" color="#FF6B6B" />
+            ) : (
+              <Ionicons name="chevron-forward" size={16} color="#FF6B6B" />
+            )}
           </TouchableOpacity>
         </View>
 
