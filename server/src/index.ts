@@ -5,6 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import trendsRouter, { ALL_CATEGORIES, getTrends } from './routes/trends';
 import pushRouter from './routes/push';
+import accountRouter from './routes/account';
 import { getPushTokens } from './services/pushTokens';
 import { sendPushNotifications } from './services/expoPush';
 import { CACHE_TTL_MINUTES } from './cache';
@@ -18,6 +19,7 @@ app.use(express.json());
 app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/trends', trendsRouter);
 app.use('/api/push', pushRouter);
+app.use('/api/account', accountRouter);
 
 const ALL_REGIONS = ['US', 'GB', 'CA', 'AU', 'DE', 'FR', 'JP', 'BR', 'IN'];
 
