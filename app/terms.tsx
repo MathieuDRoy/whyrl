@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 
-const LAST_UPDATED = 'June 23, 2026';
+const LAST_UPDATED = 'August 14, 2026';
 
 export default function TermsScreen() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function TermsScreen() {
         </Section>
 
         <Section title="2. Description of Service">
-          Whyrl is an AI-powered news aggregation application. We collect publicly available trending topics from third-party sources (NewsAPI, Reddit) and use Claude AI (Anthropic) to generate original summaries. We do not reproduce or redistribute original news articles. Whyrl is not a news publisher and does not claim editorial responsibility for underlying source content.
+          Whyrl is an AI-powered news aggregation application. We collect publicly available trending topics from third-party sources (NewsAPI) and use Claude AI (Anthropic) to generate original summaries. We do not reproduce or redistribute original news articles. Whyrl is not a news publisher and does not claim editorial responsibility for underlying source content.
         </Section>
 
         <Section title="3. User Accounts">
@@ -48,7 +48,7 @@ export default function TermsScreen() {
         </Section>
 
         <Section title="5. Copyright and Content">
-          The Whyrl application, its design, branding, and AI-generated summaries are the intellectual property of Whyrl's developers. Underlying news headlines are sourced from NewsAPI and Reddit under their respective terms of service. We do not claim ownership of third-party source content.{'\n\n'}You may not reproduce, redistribute, or commercially exploit Whyrl's content without written permission.
+          The Whyrl application, its design, branding, and AI-generated summaries are the intellectual property of Whyrl's developers. Underlying news headlines are sourced from NewsAPI under its terms of service. We do not claim ownership of third-party source content.{'\n\n'}You may not reproduce, redistribute, or commercially exploit Whyrl's content without written permission.
         </Section>
 
         <Section title="6. Acceptable Use">

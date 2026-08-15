@@ -177,7 +177,7 @@ export default function SettingsScreen() {
         </View>
 
         <Text style={styles.footerNote}>
-          Whyrl uses AI to summarize trending content from NewsAPI and Reddit.
+          Whyrl uses AI to summarize trending content from NewsAPI.
           Summaries are AI-generated and do not reproduce original articles.
           Content is region-filtered and updated every 4 hours.
         </Text>
