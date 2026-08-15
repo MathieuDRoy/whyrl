@@ -139,23 +139,28 @@ export default function CardDetailModal({ card, onClose }: Props) {
               </View>
             )}
 
-            <View style={styles.engagementRow}>
-              <View style={styles.engagementItem}>
-                <Ionicons name="people" size={16} color={theme.colors.textSecondary} />
-                <Text style={styles.engagementValue}>{formatEngagement(card.engagements)}</Text>
-                <Text style={styles.engagementLabel}>Engagements</Text>
-              </View>
-              <View style={styles.engagementItem}>
-                <Ionicons name="repeat" size={16} color={theme.colors.textSecondary} />
-                <Text style={styles.engagementValue}>{formatEngagement(Math.floor(card.engagements * 0.3))}</Text>
-                <Text style={styles.engagementLabel}>Reshares</Text>
-              </View>
-              <View style={styles.engagementItem}>
-                <Ionicons name="chatbubble" size={16} color={theme.colors.textSecondary} />
-                <Text style={styles.engagementValue}>{formatEngagement(Math.floor(card.engagements * 0.12))}</Text>
-                <Text style={styles.engagementLabel}>Comments</Text>
+            {card.engagements > 0 && (
+            <View style={styles.engagementSection}>
+              <Text style={styles.engagementSourceLabel}>REDDIT ENGAGEMENT</Text>
+              <View style={styles.engagementRow}>
+                <View style={styles.engagementItem}>
+                  <Ionicons name="people" size={16} color={theme.colors.textSecondary} />
+                  <Text style={styles.engagementValue}>{formatEngagement(card.engagements)}</Text>
+                  <Text style={styles.engagementLabel}>Engagements</Text>
+                </View>
+                <View style={styles.engagementItem}>
+                  <Ionicons name="repeat" size={16} color={theme.colors.textSecondary} />
+                  <Text style={styles.engagementValue}>{formatEngagement(Math.floor(card.engagements * 0.3))}</Text>
+                  <Text style={styles.engagementLabel}>Reshares</Text>
+                </View>
+                <View style={styles.engagementItem}>
+                  <Ionicons name="chatbubble" size={16} color={theme.colors.textSecondary} />
+                  <Text style={styles.engagementValue}>{formatEngagement(Math.floor(card.engagements * 0.12))}</Text>
+                  <Text style={styles.engagementLabel}>Comments</Text>
+                </View>
               </View>
             </View>
+            )}
 
             <View style={styles.aiNote}>
               <Ionicons name="sparkles" size={13} color={theme.colors.accent} />
@@ -357,12 +362,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600', fontFamily: theme.fonts.semiBold,
   },
+  engagementSection: {
+    marginBottom: 16,
+  },
+  engagementSourceLabel: {
+    color: theme.colors.textMuted,
+    fontSize: 10,
+    fontWeight: '700', fontFamily: theme.fonts.bold,
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
   engagementRow: {
     flexDirection: 'row',
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.radius.md,
     padding: 16,
-    marginBottom: 16,
     gap: 4,
   },
   engagementItem: {
