@@ -9,6 +9,7 @@ import {
   Animated,
   Dimensions,
   Platform,
+  Share,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -50,6 +51,17 @@ export default function CardDetailModal({ card, onClose }: Props) {
 
   if (!card) return null;
 
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `${card.title}\n\n${card.details}\n\nvia Whyrl`,
+        title: card.title,
+      });
+    } catch (err: any) {
+      console.warn('[CardDetailModal] share failed:', err?.message);
+    }
+  };
+
   const saved = state.savedCardIds.includes(card.id);
   const catColor = theme.colors.category[card.category] ?? theme.colors.accent;
   const gradColors = theme.colors.categoryGradient[card.category] ?? ['#111', '#0A0A0A'];
@@ -75,7 +87,7 @@ export default function CardDetailModal({ card, onClose }: Props) {
                     color={saved ? theme.colors.accent : theme.colors.textSecondary}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.actionBtn}>
+                <TouchableOpacity style={styles.actionBtn} onPress={handleShare}>
                   <Ionicons name="share-outline" size={16} color={theme.colors.textSecondary} />
                 </TouchableOpacity>
               </View>
