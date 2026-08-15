@@ -12,7 +12,6 @@ function makeCard(id: string, isAd = false): TrendCard {
     region: 'US',
     timestamp: '1h ago',
     trendingScore: 90,
-    engagements: 1000,
     hashtags: [],
     isAd,
   };

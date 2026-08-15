@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { trendsCache } from '../cache';
 import { analyzeTrends } from '../services/claude';
-import { fetchRedditPosts } from '../services/reddit';
 import { fetchNewsApiPosts } from '../services/newsapi';
 import { Category } from '../types';
 
@@ -18,18 +17,14 @@ export async function getTrends(region: string, categories: Category[], force = 
   }
 
   console.log(`[cache] MISS for ${cacheKey} — fetching fresh data`);
-  const [redditPosts, newsApiPosts] = await Promise.all([
-    fetchRedditPosts(categories, region),
-    fetchNewsApiPosts(categories, region),
-  ]);
+  const newsApiPosts = await fetchNewsApiPosts(categories, region);
 
-  const allPosts = [...newsApiPosts, ...redditPosts];
-  if (allPosts.length === 0) {
+  if (newsApiPosts.length === 0) {
     throw Object.assign(new Error('No posts fetched from sources'), { status: 503 });
   }
 
-  console.log(`[sources] ${redditPosts.length} reddit + ${newsApiPosts.length} newsapi posts`);
-  const cards = await analyzeTrends(allPosts, region, categories);
+  console.log(`[sources] ${newsApiPosts.length} newsapi posts`);
+  const cards = await analyzeTrends(newsApiPosts, region, categories);
   trendsCache.set(cacheKey, cards);
 
   return { cards, cached: false };

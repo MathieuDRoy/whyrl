@@ -13,7 +13,6 @@ function makeCard(overrides: Partial<TrendCard>): TrendCard {
     region: 'US',
     timestamp: '1h ago',
     trendingScore: 90,
-    engagements: 1000,
     hashtags: overrides.hashtags ?? [],
     isAd: overrides.isAd ?? false,
     ...overrides,

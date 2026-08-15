@@ -5,13 +5,12 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SYSTEM_PROMPT = `You are a trend analysis engine for Whyrl, a news aggregator app.
 
-Your job: given a list of raw social media posts, extract and return the top trending stories as structured JSON.
+Your job: given a list of raw news articles, extract and return the top trending stories as structured JSON.
 
 Rules:
 - Write each summary in 1–2 punchy sentences (max 40 words). Hook the reader immediately.
 - Write details in 3–5 sentences with more context, numbers, and significance (max 120 words).
 - trendingScore must be 1–100 (100 = extremely viral).
-- engagements = combined upvotes + comments from the raw posts.
 - hashtags: 2–4 relevant hashtags WITHOUT the # symbol.
 - Assign each card to exactly one category from: politics, finance, sport, entertainment, tech, world.
 - timestamp: ISO 8601 string. Use the PUBLISHED value from the source post(s) the card is based on (pick the most recent if multiple). Only fall back to current time if no post has a PUBLISHED value.
@@ -29,18 +28,17 @@ const CARDS_SCHEMA = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['id', 'title', 'summary', 'details', 'category', 'source', 'region', 'timestamp', 'trendingScore', 'engagements', 'hashtags', 'tall'],
+        required: ['id', 'title', 'summary', 'details', 'category', 'source', 'region', 'timestamp', 'trendingScore', 'hashtags', 'tall'],
         properties: {
           id: { type: 'string' },
           title: { type: 'string' },
           summary: { type: 'string' },
           details: { type: 'string' },
           category: { type: 'string', enum: ['politics', 'finance', 'sport', 'entertainment', 'tech', 'world'] },
-          source: { type: 'string', enum: ['newsapi', 'reddit'] },
+          source: { type: 'string', enum: ['newsapi'] },
           region: { type: 'string' },
           timestamp: { type: 'string' },
           trendingScore: { type: 'number' },
-          engagements: { type: 'number' },
           hashtags: { type: 'array', items: { type: 'string' } },
           tall: { type: 'boolean' },
         },
@@ -54,10 +52,9 @@ export async function analyzeTrends(
   region: string,
   categories: Category[],
 ): Promise<TrendCard[]> {
-  // Sort by engagement and cap at 60 to keep the prompt size manageable
-  const topPosts = [...posts]
-    .sort((a, b) => (b.score + b.comments) - (a.score + a.comments))
-    .slice(0, 60);
+  // Cap at 60 to keep the prompt size manageable; NewsAPI already returns
+  // posts in relevance/recency order so no re-sorting is needed here.
+  const topPosts = posts.slice(0, 60);
 
   const userMessage = `
 Current time (UTC): ${new Date().toISOString()}
@@ -65,7 +62,7 @@ Region: ${region}
 Requested categories: ${categories.join(', ')}
 
 Raw posts to analyze (${topPosts.length} total):
-${topPosts.map((p, i) => `[${i + 1}] SOURCE:${p.source} SCORE:${p.score} COMMENTS:${p.comments} PUBLISHED:${p.publishedAt ?? 'unknown'}
+${topPosts.map((p, i) => `[${i + 1}] SOURCE:${p.source} PUBLISHED:${p.publishedAt ?? 'unknown'}
 TITLE: ${p.title}
 BODY: ${p.body.slice(0, 300)}`).join('\n\n')}
 

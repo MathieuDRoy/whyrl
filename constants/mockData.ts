@@ -1,6 +1,6 @@
 import { Category } from './theme';
 
-export type Source = 'newsapi' | 'reddit';
+export type Source = 'newsapi';
 
 export interface TrendCard {
   id: string;
@@ -12,7 +12,6 @@ export interface TrendCard {
   region: string;
   timestamp: string;
   trendingScore: number;
-  engagements: number;
   hashtags: string[];
   isAd: boolean;
   adLabel?: string;

@@ -69,8 +69,6 @@ export default function TrendCard({ card, onPress }: Props) {
       <View style={styles.cardFooter}>
         <Text style={styles.timestampText}>{card.timestamp}</Text>
         <View style={styles.footerRight}>
-          <Ionicons name="people-outline" size={12} color={theme.colors.textMuted} />
-          <Text style={styles.engagementText}>{formatEngagement(card.engagements)}</Text>
           <TouchableOpacity
             onPress={(e) => {
               e.stopPropagation();
@@ -89,12 +87,6 @@ export default function TrendCard({ card, onPress }: Props) {
       </View>
     </TouchableOpacity>
   );
-}
-
-function formatEngagement(n: number) {
-  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
-  if (n >= 1000) return `${(n / 1000).toFixed(0)}K`;
-  return String(n);
 }
 
 const styles = StyleSheet.create({
@@ -180,10 +172,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-  },
-  engagementText: {
-    color: theme.colors.textMuted,
-    fontSize: 11,
   },
   saveBtn: {
     marginLeft: 6,

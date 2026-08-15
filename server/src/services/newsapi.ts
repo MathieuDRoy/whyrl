@@ -26,8 +26,6 @@ function parseArticles(articles: any[]): RawPost[] {
     .map((a: any) => ({
       title: a.title,
       body: [a.description, a.content].filter(Boolean).join(' ').slice(0, 500) || a.title,
-      score: 0,
-      comments: 0,
       source: 'newsapi' as const,
       publishedAt: a.publishedAt,
     }))
