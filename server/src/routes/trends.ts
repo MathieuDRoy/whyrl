@@ -23,13 +23,13 @@ export function normalizeRegion(region: string): string {
 
 export async function getTrends(region: string, categories: Category[], force = false) {
   const cacheKey = `${region}:${[...categories].sort().join(',')}`;
-  const cached = force ? null : trendsCache.get(cacheKey);
+  const cached = force ? null : await trendsCache.get(cacheKey);
   if (cached) {
     console.log(`[cache] HIT for ${cacheKey}`);
     return { cards: cached, cached: true };
   }
 
-  if (!force && trendsFailureCache.get(cacheKey)) {
+  if (!force && (await trendsFailureCache.get(cacheKey))) {
     console.log(`[cache] recent failure for ${cacheKey} — skipping fetch`);
     throw Object.assign(new Error('No posts fetched from sources'), { status: 503 });
   }
@@ -38,13 +38,13 @@ export async function getTrends(region: string, categories: Category[], force = 
   const newsApiPosts = await fetchNewsApiPosts(categories, region);
 
   if (newsApiPosts.length === 0) {
-    trendsFailureCache.set(cacheKey, true);
+    await trendsFailureCache.set(cacheKey, true);
     throw Object.assign(new Error('No posts fetched from sources'), { status: 503 });
   }
 
   console.log(`[sources] ${newsApiPosts.length} newsapi posts`);
   const cards = await analyzeTrends(newsApiPosts, region, categories);
-  trendsCache.set(cacheKey, cards);
+  await trendsCache.set(cacheKey, cards);
 
   return { cards, cached: false };
 }

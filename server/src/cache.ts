@@ -1,17 +1,19 @@
-interface CacheEntry<T> {
-  data: T;
-  expiresAt: number;
+import Redis from 'ioredis';
+import { TrendCard } from './types';
+
+interface Cache<T> {
+  get(key: string): Promise<T | null>;
+  set(key: string, data: T): Promise<void>;
 }
 
-class TTLCache<T> {
-  private store = new Map<string, CacheEntry<T>>();
-  private ttlMs: number;
+// In-memory fallback, used when REDIS_URL isn't configured (e.g. local dev).
+// Data does not survive a process restart.
+class MemoryTTLCache<T> implements Cache<T> {
+  private store = new Map<string, { data: T; expiresAt: number }>();
 
-  constructor(ttlMinutes: number) {
-    this.ttlMs = ttlMinutes * 60 * 1000;
-  }
+  constructor(private ttlMs: number) {}
 
-  get(key: string): T | null {
+  async get(key: string): Promise<T | null> {
     const entry = this.store.get(key);
     if (!entry) return null;
     if (Date.now() > entry.expiresAt) {
@@ -21,21 +23,59 @@ class TTLCache<T> {
     return entry.data;
   }
 
-  set(key: string, data: T): void {
+  async set(key: string, data: T): Promise<void> {
     this.store.set(key, { data, expiresAt: Date.now() + this.ttlMs });
-  }
-
-  clear(): void {
-    this.store.clear();
   }
 }
 
-import { TrendCard } from './types';
+// Redis-backed cache, shared across restarts and across server instances.
+// A Redis error degrades to "treat as cache miss" rather than failing the
+// request — losing the cache is fine, losing the API isn't.
+class RedisTTLCache<T> implements Cache<T> {
+  constructor(
+    private redis: Redis,
+    private prefix: string,
+    private ttlSeconds: number,
+  ) {}
+
+  async get(key: string): Promise<T | null> {
+    try {
+      const raw = await this.redis.get(`${this.prefix}:${key}`);
+      return raw ? (JSON.parse(raw) as T) : null;
+    } catch (err: any) {
+      console.warn(`[cache] Redis GET failed for ${key}:`, err?.message);
+      return null;
+    }
+  }
+
+  async set(key: string, data: T): Promise<void> {
+    try {
+      await this.redis.set(`${this.prefix}:${key}`, JSON.stringify(data), 'EX', this.ttlSeconds);
+    } catch (err: any) {
+      console.warn(`[cache] Redis SET failed for ${key}:`, err?.message);
+    }
+  }
+}
+
+const redisUrl = process.env.REDIS_URL;
+const redisClient = redisUrl ? new Redis(redisUrl, { maxRetriesPerRequest: 2 }) : null;
+
+if (redisClient) {
+  redisClient.on('error', (err) => console.warn('[cache] Redis connection error:', err.message));
+  console.log('[cache] REDIS_URL set — using Redis-backed cache');
+} else {
+  console.log('[cache] REDIS_URL not set — using in-memory cache (cleared on every restart)');
+}
+
 export const CACHE_TTL_MINUTES = 240;
-export const trendsCache = new TTLCache<TrendCard[]>(CACHE_TTL_MINUTES);
+export const trendsCache: Cache<TrendCard[]> = redisClient
+  ? new RedisTTLCache<TrendCard[]>(redisClient, 'trends', CACHE_TTL_MINUTES * 60)
+  : new MemoryTTLCache<TrendCard[]>(CACHE_TTL_MINUTES * 60 * 1000);
 
 // Short-lived cache of recent source-fetch failures, so a rate-limited or
 // down upstream doesn't get hammered again on every request that comes in
 // before the next scheduled retry.
 export const FAILURE_TTL_MINUTES = 5;
-export const trendsFailureCache = new TTLCache<true>(FAILURE_TTL_MINUTES);
+export const trendsFailureCache: Cache<true> = redisClient
+  ? new RedisTTLCache<true>(redisClient, 'trends-failure', FAILURE_TTL_MINUTES * 60)
+  : new MemoryTTLCache<true>(FAILURE_TTL_MINUTES * 60 * 1000);
