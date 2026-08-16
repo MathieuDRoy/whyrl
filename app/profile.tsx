@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -28,6 +28,8 @@ export default function ProfileScreen() {
   const { width } = useWindowDimensions();
   const [selectedCard, setSelectedCard] = useState<TrendCard | null>(null);
   const [savedCards, setSavedCards] = useState<TrendCard[]>([]);
+  const [savedLoading, setSavedLoading] = useState(false);
+  const [savedError, setSavedError] = useState(false);
   const [streak, setStreak] = useState<StreakData>({ currentStreak: 0, lastActiveDate: '' });
 
   // Name editing state
@@ -36,15 +38,32 @@ export default function ProfileScreen() {
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadSaved = useCallback(async () => {
     const userId = session?.user.id;
     if (!userId) {
       setSavedCards([]);
       return;
     }
-    getSavedTrends(userId).then(setSavedCards);
-    recordVisit(userId).then(setStreak);
-  }, [session?.user.id, state.savedCardIds]);
+    setSavedLoading(true);
+    setSavedError(false);
+    try {
+      setSavedCards(await getSavedTrends(userId));
+    } catch (err: any) {
+      console.warn('[profile] failed to load saved stories:', err?.message);
+      setSavedError(true);
+    } finally {
+      setSavedLoading(false);
+    }
+  }, [session?.user.id]);
+
+  useEffect(() => {
+    loadSaved();
+  }, [loadSaved, state.savedCardIds]);
+
+  useEffect(() => {
+    const userId = session?.user.id;
+    if (userId) recordVisit(userId).then(setStreak);
+  }, [session?.user.id]);
 
   const displayName = profile?.name ?? '';
   const displayEmail = session?.user.email ?? '';
@@ -195,7 +214,20 @@ export default function ProfileScreen() {
               <Text style={styles.sectionCount}>{savedCards.length}</Text>
             </View>
 
-            {savedCards.length === 0 ? (
+            {savedLoading ? (
+              <View style={styles.emptyState}>
+                <ActivityIndicator color={theme.colors.accent} />
+              </View>
+            ) : savedError ? (
+              <View style={styles.emptyState}>
+                <Ionicons name="wifi-outline" size={48} color={theme.colors.textMuted} />
+                <Text style={styles.emptyTitle}>Couldn't load your saved stories</Text>
+                <Text style={styles.emptySubtitle}>Check your connection and try again</Text>
+                <TouchableOpacity style={styles.browseBtn} onPress={loadSaved}>
+                  <Text style={styles.browseBtnText}>Retry</Text>
+                </TouchableOpacity>
+              </View>
+            ) : savedCards.length === 0 ? (
               <View style={styles.emptyState}>
                 <Ionicons name="bookmark-outline" size={48} color={theme.colors.textMuted} />
                 <Text style={styles.emptyTitle}>No saved stories yet</Text>
