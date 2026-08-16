@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
 import { TrendCard } from './types';
 
-interface Cache<T> {
+export interface Cache<T> {
   get(key: string): Promise<T | null>;
   set(key: string, data: T): Promise<void>;
 }
@@ -67,15 +67,20 @@ if (redisClient) {
   console.log('[cache] REDIS_URL not set — using in-memory cache (cleared on every restart)');
 }
 
+// Shared factory so any module can get a cache that's Redis-backed (and
+// survives restarts) when REDIS_URL is configured, falling back to
+// in-memory otherwise - same tradeoffs as trendsCache below.
+export function createCache<T>(prefix: string, ttlSeconds: number): Cache<T> {
+  return redisClient
+    ? new RedisTTLCache<T>(redisClient, prefix, ttlSeconds)
+    : new MemoryTTLCache<T>(ttlSeconds * 1000);
+}
+
 export const CACHE_TTL_MINUTES = 240;
-export const trendsCache: Cache<TrendCard[]> = redisClient
-  ? new RedisTTLCache<TrendCard[]>(redisClient, 'trends', CACHE_TTL_MINUTES * 60)
-  : new MemoryTTLCache<TrendCard[]>(CACHE_TTL_MINUTES * 60 * 1000);
+export const trendsCache = createCache<TrendCard[]>('trends', CACHE_TTL_MINUTES * 60);
 
 // Short-lived cache of recent source-fetch failures, so a rate-limited or
 // down upstream doesn't get hammered again on every request that comes in
 // before the next scheduled retry.
 export const FAILURE_TTL_MINUTES = 5;
-export const trendsFailureCache: Cache<true> = redisClient
-  ? new RedisTTLCache<true>(redisClient, 'trends-failure', FAILURE_TTL_MINUTES * 60)
-  : new MemoryTTLCache<true>(FAILURE_TTL_MINUTES * 60 * 1000);
+export const trendsFailureCache = createCache<true>('trends-failure', FAILURE_TTL_MINUTES * 60);
