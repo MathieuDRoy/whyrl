@@ -34,7 +34,7 @@ export const initialState: AppState = {
   savedCardIds: [],
   selectedCategory: 'all',
   searchQuery: '',
-  region: 'US',
+  region: 'NA',
   preferredCategories: ['politics', 'finance', 'sport', 'entertainment', 'tech', 'world'],
   user: {
     name: 'Alex Johnson',

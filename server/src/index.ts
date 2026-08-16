@@ -21,12 +21,12 @@ app.use('/api/trends', trendsRouter);
 app.use('/api/push', pushRouter);
 app.use('/api/account', accountRouter);
 
-const ALL_REGIONS = ['US', 'GB', 'CA', 'AU', 'DE', 'FR', 'JP', 'BR', 'IN'];
+const ALL_REGIONS = ['NA', 'EU'];
 
-// Refresh US and notify devices, then re-warm all other regions.
+// Refresh NA and notify devices, then re-warm all other regions.
 async function refreshAndNotify(force: boolean) {
   try {
-    const { cached } = await getTrends('US', ALL_CATEGORIES, force);
+    const { cached } = await getTrends('NA', ALL_CATEGORIES, force);
     if (!force && cached) return;
 
     await sendPushNotifications(

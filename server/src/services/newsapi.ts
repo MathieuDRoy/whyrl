@@ -2,21 +2,12 @@ import { Category, RawPost } from '../types';
 
 const API_KEY = process.env.NEWS_API_KEY;
 
-const REGION_COUNTRY: Record<string, string> = {
-  US: 'us', GB: 'gb', CA: 'ca', AU: 'au',
-  DE: 'de', FR: 'fr', JP: 'jp', BR: 'br', IN: 'in',
-};
-
+// NewsAPI's /top-headlines only accepts single ISO country codes, with no
+// continent-level option — so regions always go through /everything with a
+// keyword query instead.
 const REGION_QUERY: Record<string, string> = {
-  US: 'United States news',
-  GB: 'United Kingdom news',
-  CA: 'Canada news',
-  AU: 'Australia news',
-  DE: 'Germany news',
-  FR: 'France news',
-  JP: 'Japan news',
-  BR: 'Brazil news',
-  IN: 'India news',
+  NA: 'North America news',
+  EU: 'Europe news',
 };
 
 function parseArticles(articles: any[]): RawPost[] {
@@ -46,34 +37,6 @@ export async function fetchNewsApiPosts(
     return [];
   }
 
-  const country = REGION_COUNTRY[region];
-
-  // Try country-specific top headlines first
-  if (country) {
-    try {
-      const params = new URLSearchParams({
-        apiKey: API_KEY,
-        country,
-        language: 'en',
-        pageSize: '100',
-      });
-      const res = await fetch(`https://newsapi.org/v2/top-headlines?${params}`);
-      if (res.ok) {
-        const data = (await res.json()) as any;
-        if (data.status === 'ok') {
-          const articles = parseArticles(data.articles ?? []);
-          if (articles.length > 0) {
-            console.log(`[newsapi] ${articles.length} articles (top-headlines/${country})`);
-            return articles;
-          }
-        }
-      }
-    } catch (err: any) {
-      console.warn('[newsapi] top-headlines error:', err?.message);
-    }
-  }
-
-  // Fall back to /v2/everything with a country keyword search — works on all plan tiers
   const query = REGION_QUERY[region] ?? 'world news';
   try {
     const params = new URLSearchParams({

@@ -101,8 +101,8 @@ describe('AppContext reducer', () => {
       expect(initialState.selectedCategory).toBe('all');
     });
 
-    it('defaults region to US', () => {
-      expect(initialState.region).toBe('US');
+    it('defaults region to NA', () => {
+      expect(initialState.region).toBe('NA');
     });
 
     it('defaults user plan to free', () => {

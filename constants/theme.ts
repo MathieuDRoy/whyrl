@@ -81,13 +81,6 @@ export const CATEGORIES: { key: Category | 'all'; label: string; emoji: string }
 ];
 
 export const REGIONS = [
-  { key: 'US', label: '🇺🇸 United States' },
-  { key: 'GB', label: '🇬🇧 United Kingdom' },
-  { key: 'CA', label: '🇨🇦 Canada' },
-  { key: 'AU', label: '🇦🇺 Australia' },
-  { key: 'DE', label: '🇩🇪 Germany' },
-  { key: 'FR', label: '🇫🇷 France' },
-  { key: 'JP', label: '🇯🇵 Japan' },
-  { key: 'BR', label: '🇧🇷 Brazil' },
-  { key: 'IN', label: '🇮🇳 India' },
+  { key: 'NA', label: '🌎 North America' },
+  { key: 'EU', label: '🇪🇺 Europe' },
 ];

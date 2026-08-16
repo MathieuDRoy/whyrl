@@ -19,7 +19,7 @@ export default function OnboardingScreen() {
   const { completeOnboarding } = useAuth();
   const { dispatch } = useApp();
   const [name, setName] = useState('');
-  const [country, setCountry] = useState('US');
+  const [country, setCountry] = useState('NA');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

@@ -33,3 +33,9 @@ class TTLCache<T> {
 import { TrendCard } from './types';
 export const CACHE_TTL_MINUTES = 240;
 export const trendsCache = new TTLCache<TrendCard[]>(CACHE_TTL_MINUTES);
+
+// Short-lived cache of recent source-fetch failures, so a rate-limited or
+// down upstream doesn't get hammered again on every request that comes in
+// before the next scheduled retry.
+export const FAILURE_TTL_MINUTES = 5;
+export const trendsFailureCache = new TTLCache<true>(FAILURE_TTL_MINUTES);
