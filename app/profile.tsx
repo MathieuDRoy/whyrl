@@ -26,7 +26,7 @@ export default function ProfileScreen() {
   const { session, profile, updateName } = useAuth();
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const [selectedCard, setSelectedCard] = useState<TrendCard | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [savedCards, setSavedCards] = useState<TrendCard[]>([]);
   const [savedLoading, setSavedLoading] = useState(false);
   const [savedError, setSavedError] = useState(false);
@@ -107,6 +107,8 @@ export default function ProfileScreen() {
     savedCards.forEach((card, i) => cols[i % numColumns].push(card));
     return cols;
   }, [savedCards, numColumns]);
+
+  const selectedCard = selectedIndex !== null ? savedCards[selectedIndex] ?? null : null;
 
   const stats = [
     { label: 'Saved', value: savedCards.length, icon: 'bookmark' },
@@ -246,7 +248,7 @@ export default function ProfileScreen() {
                       <TrendCardComponent
                         key={card.id}
                         card={card}
-                        onPress={() => setSelectedCard(card)}
+                        onPress={() => setSelectedIndex(savedCards.findIndex((c) => c.id === card.id))}
                       />
                     ))}
                   </View>
@@ -257,7 +259,14 @@ export default function ProfileScreen() {
         )}
       </ScrollView>
 
-      <CardDetailModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+      <CardDetailModal
+        card={selectedCard}
+        onClose={() => setSelectedIndex(null)}
+        onSwipeNext={() => setSelectedIndex((i) => (i !== null && i < savedCards.length - 1 ? i + 1 : i))}
+        onSwipePrevious={() => setSelectedIndex((i) => (i !== null && i > 0 ? i - 1 : i))}
+        hasNext={selectedIndex !== null && selectedIndex < savedCards.length - 1}
+        hasPrevious={selectedIndex !== null && selectedIndex > 0}
+      />
     </SafeAreaView>
   );
 }

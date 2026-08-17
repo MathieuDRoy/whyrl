@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform,
   Share,
+  PanResponder,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,16 +21,42 @@ import { useApp } from '../store/AppContext';
 interface Props {
   card: TrendCard | null;
   onClose: () => void;
+  onSwipeNext?: () => void;
+  onSwipePrevious?: () => void;
+  hasNext?: boolean;
+  hasPrevious?: boolean;
 }
 
-const { height: SCREEN_H } = Dimensions.get('window');
+const { height: SCREEN_H, width: SCREEN_W } = Dimensions.get('window');
+const SWIPE_THRESHOLD = 80;
 
-export default function CardDetailModal({ card, onClose }: Props) {
+export default function CardDetailModal({
+  card,
+  onClose,
+  onSwipeNext,
+  onSwipePrevious,
+  hasNext = false,
+  hasPrevious = false,
+}: Props) {
   const { state, toggleSave } = useApp();
   const slideAnim = useRef(new Animated.Value(SCREEN_H)).current;
+  const dragAnim = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const scrollOffset = useRef(0);
+  const scrollRef = useRef<ScrollView>(null);
+
+  // PanResponder is created once, so route every callback/flag it needs
+  // through a ref that's kept current every render - otherwise it would
+  // keep calling the closures captured on the first render.
+  const latest = useRef({ onSwipeNext, onSwipePrevious, hasNext, hasPrevious, onClose });
+  useEffect(() => {
+    latest.current = { onSwipeNext, onSwipePrevious, hasNext, hasPrevious, onClose };
+  }, [onSwipeNext, onSwipePrevious, hasNext, hasPrevious, onClose]);
 
   useEffect(() => {
     if (card) {
+      dragAnim.setValue({ x: 0, y: 0 });
+      scrollRef.current?.scrollTo({ y: 0, animated: false });
+      scrollOffset.current = 0;
       Animated.spring(slideAnim, {
         toValue: 0,
         tension: 65,
@@ -46,8 +73,49 @@ export default function CardDetailModal({ card, onClose }: Props) {
       toValue: SCREEN_H,
       duration: 250,
       useNativeDriver: true,
-    }).start(onClose);
+    }).start(() => latest.current.onClose());
   };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_evt, g) => {
+        const horizontal = Math.abs(g.dx) > 12 && Math.abs(g.dx) > Math.abs(g.dy) * 1.5;
+        const verticalDown = g.dy > 12 && g.dy > Math.abs(g.dx) * 1.5 && scrollOffset.current <= 0;
+        return horizontal || verticalDown;
+      },
+      onPanResponderMove: Animated.event([null, { dx: dragAnim.x, dy: dragAnim.y }], {
+        useNativeDriver: false,
+      }),
+      onPanResponderRelease: (_evt, g) => {
+        const { onSwipeNext, onSwipePrevious, hasNext, hasPrevious } = latest.current;
+        const horizontalDominant = Math.abs(g.dx) > Math.abs(g.dy);
+
+        if (horizontalDominant && g.dx < -SWIPE_THRESHOLD && hasNext) {
+          Animated.timing(dragAnim, {
+            toValue: { x: -SCREEN_W, y: 0 },
+            duration: 200,
+            useNativeDriver: false,
+          }).start(() => onSwipeNext?.());
+        } else if (horizontalDominant && g.dx > SWIPE_THRESHOLD && hasPrevious) {
+          Animated.timing(dragAnim, {
+            toValue: { x: SCREEN_W, y: 0 },
+            duration: 200,
+            useNativeDriver: false,
+          }).start(() => onSwipePrevious?.());
+        } else if (!horizontalDominant && g.dy > SWIPE_THRESHOLD) {
+          handleClose();
+        } else {
+          Animated.spring(dragAnim, {
+            toValue: { x: 0, y: 0 },
+            friction: 8,
+            useNativeDriver: false,
+          }).start();
+        }
+      },
+      onPanResponderTerminationRequest: () => true,
+    }),
+  ).current;
 
   if (!card) return null;
 
@@ -71,6 +139,13 @@ export default function CardDetailModal({ card, onClose }: Props) {
       <View style={styles.backdrop}>
         <TouchableOpacity style={styles.backdropTouch} onPress={handleClose} activeOpacity={1} />
         <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.dragLayer,
+            { transform: [{ translateX: dragAnim.x }, { translateY: dragAnim.y }] },
+          ]}
+          {...panResponder.panHandlers}
+        >
           <LinearGradient colors={[...gradColors, theme.colors.surface]} style={styles.hero}>
             <View style={styles.heroTop}>
               <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
@@ -104,9 +179,14 @@ export default function CardDetailModal({ card, onClose }: Props) {
           </LinearGradient>
 
           <ScrollView
+            ref={scrollRef}
             style={styles.scroll}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
+            onScroll={(e) => {
+              scrollOffset.current = e.nativeEvent.contentOffset.y;
+            }}
+            scrollEventThrottle={16}
           >
             <Text style={styles.title}>{card.title}</Text>
 
@@ -147,6 +227,7 @@ export default function CardDetailModal({ card, onClose }: Props) {
             </View>
           </ScrollView>
         </Animated.View>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -181,6 +262,9 @@ const styles = StyleSheet.create({
     height: SCREEN_H * 0.92,
     overflow: 'hidden',
     ...(Platform.OS === 'web' && { maxWidth: 680, marginHorizontal: 'auto', width: '100%' } as any),
+  },
+  dragLayer: {
+    flex: 1,
   },
   hero: {
     paddingTop: 16,

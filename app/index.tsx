@@ -28,7 +28,7 @@ import HamburgerMenu from '../components/HamburgerMenu';
 export default function FeedScreen() {
   const { width } = useWindowDimensions();
   const { state } = useApp();
-  const [selectedCard, setSelectedCard] = useState<TrendCard | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const { cards: liveCards, loading, error, refresh } = useTrends();
 
@@ -48,6 +48,8 @@ export default function FeedScreen() {
   }, [filteredCards, numColumns]);
 
   const isFiltering = state.searchQuery || state.selectedCategory !== 'all';
+
+  const selectedCard = selectedIndex !== null ? filteredCards[selectedIndex] ?? null : null;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -89,7 +91,10 @@ export default function FeedScreen() {
               <View key={ci} style={styles.column}>
                 {col.map((card, rowIndex) => (
                   <React.Fragment key={card.id}>
-                    <TrendCardComponent card={card} onPress={() => setSelectedCard(card)} />
+                    <TrendCardComponent
+                      card={card}
+                      onPress={() => setSelectedIndex(filteredCards.findIndex((c) => c.id === card.id))}
+                    />
                     {(rowIndex + 1) % 5 === 0 && <AdCard slotIndex={ci * 10 + rowIndex} />}
                   </React.Fragment>
                 ))}
@@ -110,7 +115,14 @@ export default function FeedScreen() {
         </View>
       </ScrollView>
 
-      <CardDetailModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+      <CardDetailModal
+        card={selectedCard}
+        onClose={() => setSelectedIndex(null)}
+        onSwipeNext={() => setSelectedIndex((i) => (i !== null && i < filteredCards.length - 1 ? i + 1 : i))}
+        onSwipePrevious={() => setSelectedIndex((i) => (i !== null && i > 0 ? i - 1 : i))}
+        hasNext={selectedIndex !== null && selectedIndex < filteredCards.length - 1}
+        hasPrevious={selectedIndex !== null && selectedIndex > 0}
+      />
       <HamburgerMenu visible={menuOpen} onClose={() => setMenuOpen(false)} />
     </SafeAreaView>
   );
