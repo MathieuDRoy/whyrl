@@ -22,6 +22,21 @@ async function withRetry<T>(fn: () => Promise<T>, attempts = 3, delayMs = 600): 
   throw lastErr;
 }
 
+// React Native's Blob polyfill (unlike the browser's) doesn't implement
+// .text(), so calling it directly silently throws on iOS/Android while
+// working fine on web. FileReader.readAsText is supported on both.
+function blobToText(blob: Blob): Promise<string> {
+  if (typeof (blob as any).text === 'function') {
+    return (blob as any).text();
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result ?? ''));
+    reader.onerror = () => reject(reader.error ?? new Error('Failed to read blob'));
+    reader.readAsText(blob);
+  });
+}
+
 export async function getSavedTrendIds(userId: string): Promise<string[]> {
   try {
     const data = await withRetry(async () => {
@@ -57,7 +72,7 @@ export async function getSavedTrends(userId: string): Promise<TrendCard[]> {
           if (downloadError || !file) throw downloadError ?? new Error('empty download');
           return file;
         });
-        return JSON.parse(await file.text()) as TrendCard;
+        return JSON.parse(await blobToText(file)) as TrendCard;
       } catch (err: any) {
         console.warn('[trendsStorage] getSavedTrends download:', err?.message);
         return null;
