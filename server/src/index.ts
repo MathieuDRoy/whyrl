@@ -86,7 +86,7 @@ async function maybeSendDailyNotification() {
 
   try {
     await sendPushNotifications(
-      getPushTokens(),
+      await getPushTokens(),
       'Whyrl',
       "Fresh trends just dropped - check out what's new.",
     );

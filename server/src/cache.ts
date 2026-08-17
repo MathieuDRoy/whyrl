@@ -58,7 +58,9 @@ class RedisTTLCache<T> implements Cache<T> {
 }
 
 const redisUrl = process.env.REDIS_URL;
-const redisClient = redisUrl ? new Redis(redisUrl, { maxRetriesPerRequest: 2 }) : null;
+// Exported so other modules (e.g. pushTokens) can share this connection for
+// data that doesn't fit the TTL cache shape, instead of opening their own.
+export const redisClient = redisUrl ? new Redis(redisUrl, { maxRetriesPerRequest: 2 }) : null;
 
 if (redisClient) {
   redisClient.on('error', (err) => console.warn('[cache] Redis connection error:', err.message));

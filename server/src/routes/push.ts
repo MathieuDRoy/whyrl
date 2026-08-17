@@ -3,23 +3,23 @@ import { addPushToken, removePushToken } from '../services/pushTokens';
 
 const router = Router();
 
-router.post('/register', (req: Request, res: Response) => {
+router.post('/register', async (req: Request, res: Response) => {
   const { token } = req.body as { token?: string };
   if (!token || typeof token !== 'string') {
     res.status(400).json({ error: 'Missing token' });
     return;
   }
-  addPushToken(token);
+  await addPushToken(token);
   res.json({ ok: true });
 });
 
-router.post('/unregister', (req: Request, res: Response) => {
+router.post('/unregister', async (req: Request, res: Response) => {
   const { token } = req.body as { token?: string };
   if (!token || typeof token !== 'string') {
     res.status(400).json({ error: 'Missing token' });
     return;
   }
-  removePushToken(token);
+  await removePushToken(token);
   res.json({ ok: true });
 });
 
