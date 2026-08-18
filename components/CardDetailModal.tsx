@@ -29,6 +29,11 @@ interface Props {
 
 const { height: SCREEN_H, width: SCREEN_W } = Dimensions.get('window');
 const SWIPE_THRESHOLD = 80;
+// A card swipe fires on distance OR velocity, so a quick flick that
+// hasn't traveled far still registers - matching how swipe gestures feel
+// in most native apps instead of requiring a slow, full-width drag.
+const CARD_SWIPE_DISTANCE_THRESHOLD = 45;
+const CARD_SWIPE_VELOCITY_THRESHOLD = 0.5;
 
 export default function CardDetailModal({
   card,
@@ -90,14 +95,16 @@ export default function CardDetailModal({
       onPanResponderRelease: (_evt, g) => {
         const { onSwipeNext, onSwipePrevious, hasNext, hasPrevious } = latest.current;
         const horizontalDominant = Math.abs(g.dx) > Math.abs(g.dy);
+        const wantsNext = g.dx < -CARD_SWIPE_DISTANCE_THRESHOLD || g.vx < -CARD_SWIPE_VELOCITY_THRESHOLD;
+        const wantsPrevious = g.dx > CARD_SWIPE_DISTANCE_THRESHOLD || g.vx > CARD_SWIPE_VELOCITY_THRESHOLD;
 
-        if (horizontalDominant && g.dx < -SWIPE_THRESHOLD && hasNext) {
+        if (horizontalDominant && wantsNext && hasNext) {
           Animated.timing(dragAnim, {
             toValue: { x: -SCREEN_W, y: 0 },
             duration: 200,
             useNativeDriver: false,
           }).start(() => onSwipeNext?.());
-        } else if (horizontalDominant && g.dx > SWIPE_THRESHOLD && hasPrevious) {
+        } else if (horizontalDominant && wantsPrevious && hasPrevious) {
           Animated.timing(dragAnim, {
             toValue: { x: SCREEN_W, y: 0 },
             duration: 200,
