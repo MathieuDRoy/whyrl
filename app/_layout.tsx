@@ -27,10 +27,20 @@ SplashScreen.preventAutoHideAsync();
 (TextInput as any).defaultProps = (TextInput as any).defaultProps || {};
 (TextInput as any).defaultProps.style = [{ fontFamily: theme.fonts.regular }, (TextInput as any).defaultProps.style];
 
-function AuthGate({ children }: { children: React.ReactNode }) {
+function AuthGate({ fontsLoaded, children }: { fontsLoaded: boolean; children: React.ReactNode }) {
   const { session, loading, profile, profileLoading } = useAuth();
   const router = useRouter();
   const segments = useSegments();
+
+  // Session restore reads from AsyncStorage/Keychain and isn't instant,
+  // especially right after a cold launch competing with ads SDK init and
+  // tracking-permission prompts. Keep the splash up until it resolves so
+  // the feed can't become tappable while `userId` is still unknown -
+  // otherwise a save tapped in that window hits toggleSave's `if
+  // (!userId) return` and silently does nothing.
+  useEffect(() => {
+    if (fontsLoaded && !loading && !profileLoading) SplashScreen.hideAsync();
+  }, [fontsLoaded, loading, profileLoading]);
 
   useEffect(() => {
     if (loading || profileLoading) return;
@@ -70,10 +80,6 @@ export default function RootLayout() {
     })();
   }, []);
 
-  useEffect(() => {
-    if (fontsLoaded) SplashScreen.hideAsync();
-  }, [fontsLoaded]);
-
   if (!fontsLoaded) return null;
 
   return (
@@ -82,7 +88,7 @@ export default function RootLayout() {
         <PurchaseProvider>
           <AppProvider>
             <StatusBar style="light" backgroundColor={theme.colors.bg} />
-            <AuthGate>
+            <AuthGate fontsLoaded={fontsLoaded}>
               <Stack
                 screenOptions={{
                   headerShown: false,
