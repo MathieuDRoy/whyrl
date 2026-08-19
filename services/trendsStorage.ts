@@ -62,13 +62,20 @@ export async function getSavedTrends(userId: string): Promise<TrendCard[]> {
     return data;
   });
 
+  // trend-cards is served with cache-control: max-age=3600, so on a repeat
+  // fetch iOS's networking layer revalidates and gets back a bodyless 304 -
+  // which storage-js treats as an error (any non-2xx throws), silently
+  // dropping the card. cacheNonce busts the URL so every call is a fresh,
+  // uncached 200.
+  const cacheNonce = String(Date.now());
+
   const cards = await Promise.all(
     rows.map(async (row) => {
       try {
         const file = await withRetry(async () => {
           const { data: file, error: downloadError } = await supabase.storage
             .from(BUCKET)
-            .download(`${userId}/${row.id}.json`);
+            .download(`${userId}/${row.id}.json`, { cacheNonce });
           if (downloadError || !file) throw downloadError ?? new Error('empty download');
           return file;
         });
