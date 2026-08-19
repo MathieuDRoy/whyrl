@@ -2,7 +2,7 @@
   "expo": {
     "name": "Whyrl",
     "slug": "whyrl",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "orientation": "portrait",
     "scheme": "whyrl",
     "userInterfaceStyle": "dark",
@@ -11,7 +11,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.mathieudroy.whyrl",
-      "buildNumber": "11",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSUserTrackingUsageDescription": "We use this to show you more relevant ads and measure ad performance."
