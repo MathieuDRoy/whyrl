@@ -19,6 +19,7 @@ import { AppProvider } from '../store/AppContext';
 import { AuthProvider, useAuth } from '../store/AuthContext';
 import { PurchaseProvider } from '../store/PurchaseContext';
 import { theme } from '../constants/theme';
+import { computeAuthRedirect } from '../utils/authRedirect';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -43,21 +44,8 @@ function AuthGate({ fontsLoaded, children }: { fontsLoaded: boolean; children: R
   }, [fontsLoaded, loading, profileLoading]);
 
   useEffect(() => {
-    if (loading || profileLoading) return;
-
-    const inAuthScreen = segments[0] === 'auth';
-    const inOnboarding = segments[0] === 'onboarding';
-
-    if (!session) {
-      // Not signed in — must go to auth
-      if (!inAuthScreen) router.replace('/auth');
-    } else if (!profile) {
-      // Signed in but no profile — complete onboarding first
-      if (!inOnboarding) router.replace('/onboarding');
-    } else {
-      // Fully set up — go to feed if on auth/onboarding
-      if (inAuthScreen || inOnboarding) router.replace('/');
-    }
+    const result = computeAuthRedirect(!!session, !!profile, loading, profileLoading, segments);
+    if (result.redirect) router.replace(result.to);
   }, [session, loading, profile, profileLoading, segments]);
 
   return <>{children}</>;
