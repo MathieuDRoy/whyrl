@@ -43,7 +43,16 @@ export async function getTrends(region: string, categories: Category[], force = 
   }
 
   console.log(`[sources] ${newsApiPosts.length} newsapi posts`);
-  const cards = await analyzeTrends(newsApiPosts, region, categories);
+  let cards;
+  try {
+    cards = await analyzeTrends(newsApiPosts, region, categories);
+  } catch (err: any) {
+    // Don't let a Claude failure re-trigger a full NewsAPI + Claude call on
+    // every request that lands in the next few minutes — degrade to a quick
+    // 503 instead, same as the no-posts-fetched case above.
+    await trendsFailureCache.set(cacheKey, true);
+    throw Object.assign(new Error(err?.message ?? 'Trend analysis failed'), { status: 503 });
+  }
   await trendsCache.set(cacheKey, cards);
 
   return { cards, cached: false };
