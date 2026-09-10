@@ -69,6 +69,7 @@ export async function getSavedTrends(userId: string): Promise<TrendCard[]> {
   // uncached 200.
   const cacheNonce = String(Date.now());
 
+  let failed = 0;
   const cards = await Promise.all(
     rows.map(async (row) => {
       try {
@@ -82,10 +83,21 @@ export async function getSavedTrends(userId: string): Promise<TrendCard[]> {
         return JSON.parse(await blobToText(file)) as TrendCard;
       } catch (err: any) {
         console.warn('[trendsStorage] getSavedTrends download:', err?.message);
+        failed++;
         return null;
       }
     }),
   );
+
+  // A failed download used to be silently dropped here, which left the caller
+  // unable to tell "you have no saved stories" apart from "some downloads
+  // timed out" - it just saw a shorter list, or an empty one if everything in
+  // the batch failed (e.g. during one of this project's intermittent
+  // Postgres/PostgREST timeouts). Throwing surfaces the existing retry UI
+  // instead of a misleading empty state.
+  if (failed > 0) {
+    throw new Error(`${failed} of ${rows.length} saved stories failed to download`);
+  }
 
   return cards.filter((c): c is TrendCard => c !== null);
 }
