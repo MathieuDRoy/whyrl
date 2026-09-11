@@ -8,7 +8,9 @@ import pushRouter from './routes/push';
 import accountRouter from './routes/account';
 import { getPushTokens } from './services/pushTokens';
 import { sendPushNotifications } from './services/expoPush';
+import { postCardTweet } from './services/twitter';
 import { CACHE_TTL_MINUTES, createCache } from './cache';
+import { TrendCard } from './types';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
@@ -96,14 +98,52 @@ async function maybeSendDailyNotification() {
   }
 }
 
+// Posts the single highest-trendingScore NA card that hasn't been tweeted yet,
+// once every TWEET_INTERVAL_MS. Cards don't carry a stable id across refreshes
+// (Claude regenerates it per batch), so "already posted" is tracked by title -
+// the actual identity of a story - rather than id, which could collide with
+// an unrelated card from a different refresh.
+const TWEET_INTERVAL_MS = 2 * 60 * 60 * 1000;
+const postedCardsCache = createCache<true>('twitter-posted', 60 * 60 * 48);
+
+function postedKey(card: TrendCard): string {
+  return card.title.trim().toLowerCase();
+}
+
+async function postNextTweet() {
+  try {
+    const { cards } = await getTrends('NA', ALL_CATEGORIES);
+    const unposted: TrendCard[] = [];
+    for (const card of cards) {
+      if (!(await postedCardsCache.get(postedKey(card)))) unposted.push(card);
+    }
+    if (unposted.length === 0) {
+      console.log('[twitter] no unposted cards this cycle — skipping');
+      return;
+    }
+    const top = unposted.reduce((best, c) => (c.trendingScore > best.trendingScore ? c : best));
+    await postCardTweet(top);
+    await postedCardsCache.set(postedKey(top), true);
+    console.log('[twitter] posted:', top.title);
+  } catch (err: any) {
+    console.error('[twitter] failed to post:', err?.message ?? err);
+  }
+}
+
 app.listen(Number(PORT), '0.0.0.0', () => {
   console.log('Whyrl backend listening on http://0.0.0.0:' + PORT);
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('WARNING: ANTHROPIC_API_KEY is not set - Claude calls will fail');
   }
 
-  // Warm NA first, then all other regions in the background.
-  refreshTrends(false).then(() => warmAllRegions());
+  // Warm NA first, then all other regions in the background. postNextTweet
+  // waits for this instead of running immediately alongside it - both key
+  // off the same NA cache entry, and firing at the same time on a cold cache
+  // would trigger two concurrent NewsAPI+Claude fetches instead of one.
+  refreshTrends(false).then(() => {
+    warmAllRegions();
+    postNextTweet();
+  });
 
   // Force a full refresh once per cache TTL window.
   setInterval(async () => {
@@ -115,4 +155,6 @@ app.listen(Number(PORT), '0.0.0.0', () => {
   // today's notification.
   maybeSendDailyNotification();
   setInterval(maybeSendDailyNotification, NOTIFICATION_CHECK_INTERVAL_MS);
+
+  setInterval(postNextTweet, TWEET_INTERVAL_MS);
 });
