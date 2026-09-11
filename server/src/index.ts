@@ -98,13 +98,22 @@ async function maybeSendDailyNotification() {
   }
 }
 
-// Posts the single highest-trendingScore NA card that hasn't been tweeted yet,
-// once every TWEET_INTERVAL_MS. Cards don't carry a stable id across refreshes
-// (Claude regenerates it per batch), so "already posted" is tracked by title -
-// the actual identity of a story - rather than id, which could collide with
-// an unrelated card from a different refresh.
+// Posts one NA card every TWEET_INTERVAL_MS, cycling through categories
+// (politics, finance, ...) round-robin so we don't just repeatedly post
+// whichever category tends to trend highest. Within the chosen category, the
+// most RECENT card (by the story's own published timestamp) is posted, not
+// the one with the highest trendingScore or whatever order it happens to
+// appear in the cache - the goal is fresh news, not stale-but-viral news.
+// The cursor persists in the same cache backend as everything else here, so
+// a restart resumes the rotation instead of starting over from politics.
+//
+// Cards don't carry a stable id across refreshes (Claude regenerates it per
+// batch), so "already posted" is tracked by title - the actual identity of a
+// story - rather than id, which could collide with an unrelated card from a
+// different refresh.
 const TWEET_INTERVAL_MS = 2 * 60 * 60 * 1000;
 const postedCardsCache = createCache<true>('twitter-posted', 60 * 60 * 48);
+const categoryCursorCache = createCache<number>('twitter-category-cursor', 60 * 60 * 24 * 30);
 
 function postedKey(card: TrendCard): string {
   return card.title.trim().toLowerCase();
@@ -113,18 +122,32 @@ function postedKey(card: TrendCard): string {
 async function postNextTweet() {
   try {
     const { cards } = await getTrends('NA', ALL_CATEGORIES);
-    const unposted: TrendCard[] = [];
-    for (const card of cards) {
-      if (!(await postedCardsCache.get(postedKey(card)))) unposted.push(card);
-    }
-    if (unposted.length === 0) {
-      console.log('[twitter] no unposted cards this cycle — skipping');
+    const cursor = (await categoryCursorCache.get('cursor')) ?? 0;
+
+    // Start at the cursor's category and walk forward through the rotation
+    // until we find a category with something unposted, so a starved
+    // category (nothing new since last cycle) doesn't stall the whole job.
+    for (let i = 0; i < ALL_CATEGORIES.length; i++) {
+      const categoryIndex = (cursor + i) % ALL_CATEGORIES.length;
+      const category = ALL_CATEGORIES[categoryIndex];
+
+      const unposted: TrendCard[] = [];
+      for (const card of cards.filter((c) => c.category === category)) {
+        if (!(await postedCardsCache.get(postedKey(card)))) unposted.push(card);
+      }
+      if (unposted.length === 0) continue;
+
+      const newest = unposted.reduce((best, c) =>
+        new Date(c.timestamp).getTime() > new Date(best.timestamp).getTime() ? c : best,
+      );
+      await postCardTweet(newest);
+      await postedCardsCache.set(postedKey(newest), true);
+      await categoryCursorCache.set('cursor', (categoryIndex + 1) % ALL_CATEGORIES.length);
+      console.log(`[twitter] posted (${category}):`, newest.title);
       return;
     }
-    const top = unposted.reduce((best, c) => (c.trendingScore > best.trendingScore ? c : best));
-    await postCardTweet(top);
-    await postedCardsCache.set(postedKey(top), true);
-    console.log('[twitter] posted:', top.title);
+
+    console.log('[twitter] no unposted cards in any category this cycle — skipping');
   } catch (err: any) {
     console.error('[twitter] failed to post:', err?.message ?? err);
   }
