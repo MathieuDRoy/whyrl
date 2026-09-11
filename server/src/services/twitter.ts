@@ -24,20 +24,19 @@ function getClient(): TwitterApi | null {
   return client;
 }
 
-const APP_STORE_URL = 'https://apps.apple.com/app/id6778233256';
-// X shortens every URL to this length via t.co, regardless of its real length.
-const TCO_LINK_LENGTH = 23;
 const TWEET_MAX_LENGTH = 280;
 
+// No link in the tweet body - X's pay-as-you-go pricing charges $0.20/post
+// for a post containing a URL versus $0.015 for plain text, over 13x more.
 export function buildTweetText(card: TrendCard): string {
   const hashtags = card.hashtags.slice(0, 2).map((h) => `#${h}`).join(' ');
-  const fixedLength = 2 + hashtags.length + 1 + TCO_LINK_LENGTH + 2; // blank lines + hashtags + blank line + link
+  const fixedLength = 2 + hashtags.length; // blank line + hashtags
   const summaryBudget = TWEET_MAX_LENGTH - fixedLength;
   const summary =
     card.summary.length > summaryBudget
       ? `${card.summary.slice(0, summaryBudget - 1).trimEnd()}…`
       : card.summary;
-  return `${summary}\n\n${hashtags}\n${APP_STORE_URL}`;
+  return `${summary}\n\n${hashtags}`;
 }
 
 export async function postCardTweet(card: TrendCard): Promise<void> {
