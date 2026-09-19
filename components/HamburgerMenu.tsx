@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import GlassBackground from './GlassBackground';
 import { theme, REGIONS } from '../constants/theme';
 import { useApp } from '../store/AppContext';
 import { useAuth } from '../store/AuthContext';
@@ -57,6 +58,7 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
       <View style={styles.overlay}>
         <TouchableOpacity style={styles.backdrop} onPress={onClose} activeOpacity={1} />
         <Animated.View style={[styles.drawer, { transform: [{ translateX: slideAnim }] }]}>
+          <GlassBackground />
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Profile section */}
             <View style={styles.profileSection}>
@@ -164,7 +166,8 @@ const styles = StyleSheet.create({
   },
   drawer: {
     width: DRAWER_W,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: theme.colors.bg,
+    overflow: 'hidden',
     borderLeftWidth: 1,
     borderLeftColor: theme.colors.surfaceBorder,
     paddingTop: Platform.OS === 'ios' ? 56 : 24,

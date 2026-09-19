@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../store/AuthContext';
+import BrandMark from '../components/BrandMark';
 import { theme } from '../constants/theme';
 
 type Mode = 'signin' | 'signup';
@@ -67,7 +68,7 @@ export default function AuthScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.brand}>
-            <Text style={styles.logo}>W</Text>
+            <BrandMark size={64} style={{ marginBottom: 12 }} />
             <Text style={styles.appName}>Whyrl</Text>
             <Text style={styles.tagline}>Trends explained by AI</Text>
           </View>
@@ -159,7 +160,7 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.screen,
   },
   flex: {
     flex: 1,
@@ -173,19 +174,6 @@ const styles = StyleSheet.create({
   brand: {
     alignItems: 'center',
     marginBottom: 40,
-  },
-  logo: {
-    width: 64,
-    height: 64,
-    borderRadius: theme.radius.lg,
-    backgroundColor: theme.colors.accent,
-    color: theme.colors.bg,
-    fontSize: 36,
-    fontWeight: '900', fontFamily: theme.fonts.extraBold,
-    textAlign: 'center',
-    lineHeight: 64,
-    overflow: 'hidden',
-    marginBottom: 12,
   },
   appName: {
     color: theme.colors.textPrimary,
@@ -210,7 +198,7 @@ const styles = StyleSheet.create({
   },
   toggle: {
     flexDirection: 'row',
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderRadius: theme.radius.md,
     padding: 4,
     marginBottom: 4,
@@ -233,7 +221,7 @@ const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
   },
   input: {
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
     borderRadius: theme.radius.md,
@@ -245,7 +233,7 @@ const styles = StyleSheet.create({
   passwordRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
     borderRadius: theme.radius.md,
@@ -276,7 +264,7 @@ const styles = StyleSheet.create({
     fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   errorText: {
-    color: '#FF6B6B',
+    color: theme.colors.danger,
     fontSize: 13,
     textAlign: 'center',
   },

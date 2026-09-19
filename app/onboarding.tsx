@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../store/AuthContext';
 import { useApp } from '../store/AppContext';
+import BrandMark from '../components/BrandMark';
 import { theme, REGIONS } from '../constants/theme';
 
 export default function OnboardingScreen() {
@@ -49,7 +50,7 @@ export default function OnboardingScreen() {
       >
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
           <View style={styles.brand}>
-            <Text style={styles.logo}>W</Text>
+            <BrandMark size={64} style={{ marginBottom: 12 }} />
             <Text style={styles.title}>Welcome to Whyrl</Text>
             <Text style={styles.subtitle}>Let's personalize your experience</Text>
           </View>
@@ -107,7 +108,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.screen,
   },
   flex: { flex: 1 },
   container: {
@@ -119,19 +120,6 @@ const styles = StyleSheet.create({
   brand: {
     alignItems: 'center',
     marginBottom: 32,
-  },
-  logo: {
-    width: 64,
-    height: 64,
-    borderRadius: theme.radius.lg,
-    backgroundColor: theme.colors.accent,
-    color: theme.colors.bg,
-    fontSize: 36,
-    fontWeight: '900', fontFamily: theme.fonts.extraBold,
-    textAlign: 'center',
-    lineHeight: 64,
-    overflow: 'hidden',
-    marginBottom: 12,
   },
   title: {
     color: theme.colors.textPrimary,
@@ -166,7 +154,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   input: {
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
     borderRadius: theme.radius.md,
@@ -184,7 +172,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 9,
     borderRadius: theme.radius.full,
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
   },
@@ -201,7 +189,7 @@ const styles = StyleSheet.create({
     color: theme.colors.accent,
   },
   errorText: {
-    color: '#FF6B6B',
+    color: theme.colors.danger,
     fontSize: 13,
     textAlign: 'center',
   },

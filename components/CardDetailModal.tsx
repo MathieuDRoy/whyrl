@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import GlassBackground from './GlassBackground';
 import { theme } from '../constants/theme';
 import { TrendCard } from '../constants/mockData';
 import { useApp } from '../store/AppContext';
@@ -141,13 +142,14 @@ export default function CardDetailModal({
 
   const saved = state.savedCardIds.includes(card.id);
   const catColor = theme.colors.category[card.category] ?? theme.colors.accent;
-  const gradColors = theme.colors.categoryGradient[card.category] ?? ['#111', '#0A0A0A'];
+  const gradColors = theme.colors.categoryGradient[card.category] ?? ['rgba(255,255,255,0.10)', 'rgba(255,255,255,0)'];
 
   return (
     <Modal visible={!!card} transparent animationType="none" onRequestClose={handleClose}>
       <View style={styles.backdrop}>
         <TouchableOpacity style={styles.backdropTouch} onPress={handleClose} activeOpacity={1} />
         <Animated.View style={[styles.sheet, { transform: [{ translateY: slideAnim }] }]}>
+        <GlassBackground />
         <Animated.View
           style={[
             styles.dragLayer,
@@ -155,7 +157,7 @@ export default function CardDetailModal({
           ]}
           {...panResponder.panHandlers}
         >
-          <LinearGradient colors={[...gradColors, theme.colors.surface]} style={styles.hero}>
+          <LinearGradient colors={gradColors} style={styles.hero}>
             <View style={styles.heroTop}>
               <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
                 <Ionicons name="chevron-down" size={20} color={theme.colors.textSecondary} />
@@ -277,9 +279,12 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   sheet: {
-    backgroundColor: theme.colors.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    backgroundColor: theme.colors.bg,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: 'rgba(255,255,255,0.16)',
     height: SCREEN_H * 0.92,
     overflow: 'hidden',
     ...(Platform.OS === 'web' && { maxWidth: 680, marginHorizontal: 'auto', width: '100%' } as any),
@@ -314,7 +319,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    backgroundColor: 'rgba(255,255,255,0.10)',
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
     alignItems: 'center',
@@ -365,10 +370,10 @@ const styles = StyleSheet.create({
   },
   title: {
     color: theme.colors.textPrimary,
-    fontSize: 22,
-    fontWeight: '800', fontFamily: theme.fonts.extraBold,
-    lineHeight: 30,
-    letterSpacing: -0.5,
+    fontSize: 24,
+    fontFamily: theme.fonts.display,
+    lineHeight: 31,
+    letterSpacing: -0.3,
     marginBottom: 12,
   },
   metaRow: {

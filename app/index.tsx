@@ -25,6 +25,9 @@ import TrendCardComponent from '../components/TrendCard';
 import CardDetailModal from '../components/CardDetailModal';
 import HamburgerMenu from '../components/HamburgerMenu';
 
+// Search is hidden for now; flip to true to bring the bar back.
+const SHOW_SEARCH = false;
+
 export default function FeedScreen() {
   const { width } = useWindowDimensions();
   const { state } = useApp();
@@ -54,7 +57,7 @@ export default function FeedScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <Header onMenuPress={() => setMenuOpen(true)} />
-      <SearchBar />
+      {SHOW_SEARCH && <SearchBar />}
       <CategoryFilter />
 
       {loading && (
@@ -131,7 +134,7 @@ export default function FeedScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.screen,
   },
   scroll: {
     flex: 1,

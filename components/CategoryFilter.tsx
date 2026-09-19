@@ -22,13 +22,12 @@ export default function CategoryFilter() {
               key={cat.key}
               style={[
                 styles.pill,
-                active && { backgroundColor: theme.colors.accentDim, borderColor: color },
+                active && { backgroundColor: color, borderColor: color },
               ]}
               onPress={() => dispatch({ type: 'SET_CATEGORY', category: cat.key as FilterCategory })}
               activeOpacity={0.75}
             >
-              <Text style={styles.emoji}>{cat.emoji}</Text>
-              <Text style={[styles.label, active && { color }]}>{cat.label}</Text>
+              <Text style={[styles.label, active && { color: theme.colors.bg }]}>{cat.label}</Text>
             </TouchableOpacity>
           );
         })}
@@ -38,10 +37,7 @@ export default function CategoryFilter() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.surfaceBorder,
-  },
+  wrapper: {},
   container: {
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -52,20 +48,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: theme.radius.full,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
     backgroundColor: theme.colors.surface,
   },
-  emoji: {
-    fontSize: 13,
-  },
   label: {
     color: theme.colors.textSecondary,
     fontSize: 12,
-    fontWeight: '600', fontFamily: theme.fonts.semiBold,
+    fontWeight: '700', fontFamily: theme.fonts.bold,
     letterSpacing: 0.2,
   },
 });

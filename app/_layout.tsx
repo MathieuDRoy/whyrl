@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Text, TextInput } from 'react-native';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Text, TextInput, View } from 'react-native';
+import { Stack, ThemeProvider, DarkTheme, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MobileAds from 'react-native-google-mobile-ads';
@@ -14,6 +14,8 @@ import {
   Manrope_700Bold,
   Manrope_800ExtraBold,
 } from '@expo-google-fonts/manrope';
+import { SpaceGrotesk_600SemiBold, SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk';
+import GlassBackground from '../components/GlassBackground';
 import { registerForPushNotifications } from '../services/pushNotifications';
 import { AppProvider } from '../store/AppContext';
 import { AuthProvider, useAuth } from '../store/AuthContext';
@@ -22,6 +24,11 @@ import { theme } from '../constants/theme';
 import { computeAuthRedirect } from '../utils/authRedirect';
 
 SplashScreen.preventAutoHideAsync();
+
+const navTheme = {
+  ...DarkTheme,
+  colors: { ...DarkTheme.colors, background: 'transparent', card: 'transparent' },
+};
 
 (Text as any).defaultProps = (Text as any).defaultProps || {};
 (Text as any).defaultProps.style = [{ fontFamily: theme.fonts.regular }, (Text as any).defaultProps.style];
@@ -58,6 +65,8 @@ export default function RootLayout() {
     Manrope_600SemiBold,
     Manrope_700Bold,
     Manrope_800ExtraBold,
+    SpaceGrotesk_600SemiBold,
+    SpaceGrotesk_700Bold,
   });
 
   useEffect(() => {
@@ -72,22 +81,27 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <PurchaseProvider>
-          <AppProvider>
-            <StatusBar style="light" backgroundColor={theme.colors.bg} />
-            <AuthGate fontsLoaded={fontsLoaded}>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: { backgroundColor: theme.colors.bg },
-                  animation: 'slide_from_right',
-                }}
-              />
-            </AuthGate>
-          </AppProvider>
-        </PurchaseProvider>
-      </AuthProvider>
+      <View style={{ flex: 1, backgroundColor: theme.colors.bg }}>
+        <GlassBackground />
+        <AuthProvider>
+          <PurchaseProvider>
+            <AppProvider>
+              <StatusBar style="light" backgroundColor={theme.colors.bg} />
+              <AuthGate fontsLoaded={fontsLoaded}>
+                <ThemeProvider value={navTheme}>
+                  <Stack
+                    screenOptions={{
+                      headerShown: false,
+                      contentStyle: { backgroundColor: 'transparent' },
+                      animation: 'slide_from_right',
+                    }}
+                  />
+                </ThemeProvider>
+              </AuthGate>
+            </AppProvider>
+          </PurchaseProvider>
+        </AuthProvider>
+      </View>
     </SafeAreaProvider>
   );
 }

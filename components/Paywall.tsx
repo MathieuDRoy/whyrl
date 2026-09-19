@@ -12,6 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import BrandMark from './BrandMark';
+import GlassBackground from './GlassBackground';
 import { theme } from '../constants/theme';
 import { usePurchase } from '../store/PurchaseContext';
 
@@ -41,6 +43,7 @@ export default function Paywall() {
       onRequestClose={hidePaywall}
     >
       <SafeAreaView style={styles.safe}>
+        <GlassBackground />
         <View style={styles.topBar}>
           <TouchableOpacity onPress={hidePaywall} style={styles.closeBtn} disabled={purchasing}>
             <Ionicons name="close" size={20} color={theme.colors.textSecondary} />
@@ -51,10 +54,8 @@ export default function Paywall() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <LinearGradient colors={['#0A2A14', '#0A0A0A']} style={styles.hero}>
-            <View style={styles.logoWrap}>
-              <Text style={styles.logoText}>W</Text>
-            </View>
+          <LinearGradient colors={['rgba(212,236,221,0.20)', 'rgba(212,236,221,0)']} style={styles.hero}>
+            <BrandMark size={64} />
             <Text style={styles.heroTitle}>Go Ad-Free</Text>
             <Text style={styles.heroSubtitle}>
               Upgrade to Whyrl Premium for a clean, distraction-free experience with all features unlocked.
@@ -65,7 +66,7 @@ export default function Paywall() {
             {FEATURES.map((f) => (
               <View key={f.label} style={styles.featureRow}>
                 <View style={styles.featureCheck}>
-                  <Ionicons name="checkmark" size={13} color="#000" />
+                  <Ionicons name="checkmark" size={13} color={theme.colors.bg} />
                 </View>
                 <Text style={styles.featureText}>{f.label}</Text>
               </View>
@@ -73,7 +74,7 @@ export default function Paywall() {
           </View>
 
           <View style={styles.priceCard}>
-            <LinearGradient colors={['#0A2A14', '#061508']} style={styles.priceCardInner}>
+            <LinearGradient colors={['rgba(212,236,221,0.16)', 'rgba(212,236,221,0.04)']} style={styles.priceCardInner}>
               <View style={styles.priceRow}>
                 <View>
                   <Text style={styles.planLabel}>PREMIUM MONTHLY</Text>
@@ -104,10 +105,10 @@ export default function Paywall() {
               end={{ x: 1, y: 0 }}
             >
               {purchasing ? (
-                <ActivityIndicator color="#000" />
+                <ActivityIndicator color={theme.colors.bg} />
               ) : (
                 <>
-                  <Ionicons name="flash" size={18} color="#000" />
+                  <Ionicons name="flash" size={18} color={theme.colors.bg} />
                   <Text style={styles.ctaBtnText}>Subscribe for $4.99/month</Text>
                 </>
               )}
@@ -174,21 +175,6 @@ const styles = StyleSheet.create({
     padding: 32,
     marginBottom: 28,
     gap: 12,
-  },
-  logoWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: theme.radius.lg,
-    backgroundColor: theme.colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-    overflow: 'hidden',
-  },
-  logoText: {
-    color: theme.colors.bg,
-    fontSize: 36,
-    fontWeight: '900', fontFamily: theme.fonts.extraBold,
   },
   heroTitle: {
     color: theme.colors.textPrimary,
@@ -269,7 +255,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   errorText: {
-    color: '#FF6B6B',
+    color: theme.colors.danger,
     fontSize: 13,
     textAlign: 'center',
     marginBottom: 12,
@@ -290,7 +276,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
   },
   ctaBtnText: {
-    color: '#000',
+    color: theme.colors.bg,
     fontSize: 16,
     fontWeight: '900', fontFamily: theme.fonts.extraBold,
     letterSpacing: 0.2,

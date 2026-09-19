@@ -97,7 +97,7 @@ function Bullet({ children }: { children: React.ReactNode }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: theme.colors.bg },
+  safe: { flex: 1, backgroundColor: theme.colors.screen },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

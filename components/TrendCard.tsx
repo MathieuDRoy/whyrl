@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../constants/theme';
 import { TrendCard as TrendCardType } from '../constants/mockData';
 import { useApp } from '../store/AppContext';
+import { formatTimestamp } from './CardDetailModal';
 interface Props {
   card: TrendCardType;
   onPress: () => void;
@@ -22,7 +23,7 @@ export default function TrendCard({ card, onPress }: Props) {
         </View>
         <View style={styles.adGradient}>
           <LinearGradient
-            colors={['#1A1500', '#2A2200']}
+            colors={['rgba(255,217,61,0.22)', 'rgba(255,217,61,0.06)']}
             style={styles.adGradientInner}
           >
             <Ionicons name="trending-up" size={32} color="#FFD93D" />
@@ -35,7 +36,7 @@ export default function TrendCard({ card, onPress }: Props) {
         <View style={styles.adFooter}>
           <View style={styles.adCtaBtn}>
             <Text style={styles.adCtaText}>{card.adCta}</Text>
-            <Ionicons name="arrow-forward" size={12} color="#000" />
+            <Ionicons name="arrow-forward" size={12} color={theme.colors.bg} />
           </View>
         </View>
       </TouchableOpacity>
@@ -43,7 +44,7 @@ export default function TrendCard({ card, onPress }: Props) {
   }
 
   const catColor = theme.colors.category[card.category] ?? theme.colors.accent;
-  const gradColors = theme.colors.categoryGradient[card.category] ?? ['#111', '#0A0A0A'];
+  const gradColors = theme.colors.categoryGradient[card.category] ?? ['rgba(255,255,255,0.10)', 'rgba(255,255,255,0)'];
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
@@ -67,7 +68,7 @@ export default function TrendCard({ card, onPress }: Props) {
       </View>
 
       <View style={styles.cardFooter}>
-        <Text style={styles.timestampText}>{card.timestamp}</Text>
+        <Text style={styles.timestampText}>{formatTimestamp(card.timestamp)}</Text>
         <View style={styles.footerRight}>
           <TouchableOpacity
             onPress={(e) => {
@@ -95,12 +96,13 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.lg,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
+    borderTopColor: 'rgba(255, 255, 255, 0.22)',
     overflow: 'hidden',
     marginBottom: 10,
   },
   adCard: {
-    borderColor: '#3A3000',
-    backgroundColor: '#0E0D00',
+    borderColor: theme.colors.adBorder,
+    backgroundColor: theme.colors.adBg,
   },
   gradientHeader: {
     paddingHorizontal: 12,
@@ -135,8 +137,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   trendScore: {
-    fontSize: 11,
-    fontWeight: '700', fontFamily: theme.fonts.bold,
+    fontSize: 12,
+    fontFamily: theme.fonts.display,
   },
   cardBody: {
     padding: 12,
@@ -238,7 +240,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   adCtaText: {
-    color: '#000',
+    color: theme.colors.bg,
     fontSize: 12,
     fontWeight: '800', fontFamily: theme.fonts.extraBold,
     letterSpacing: 0.3,

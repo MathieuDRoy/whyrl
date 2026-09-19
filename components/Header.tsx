@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../constants/theme';
+import BrandMark from './BrandMark';
 
 interface HeaderProps {
   onMenuPress: () => void;
@@ -11,9 +12,7 @@ export default function Header({ onMenuPress }: HeaderProps) {
   return (
     <View style={styles.container}>
       <View style={styles.logoRow}>
-        <View style={styles.logoMark}>
-          <Text style={styles.logoMarkText}>W</Text>
-        </View>
+        <BrandMark size={32} />
         <Text style={styles.wordmark}>WHYRL</Text>
         <View style={styles.tagPill}>
           <Text style={styles.tagText}>LIVE</Text>
@@ -33,34 +32,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.surfaceBorder,
-    backgroundColor: theme.colors.bg,
+    borderBottomColor: 'rgba(255, 255, 255, 0.10)',
+    backgroundColor: 'rgba(21, 45, 53, 0.45)',
   },
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-  },
-  logoMark: {
-    width: 30,
-    height: 30,
-    borderRadius: 8,
-    backgroundColor: theme.colors.accent,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logoMarkText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: '900', fontFamily: theme.fonts.extraBold,
-    letterSpacing: -0.5,
+    gap: 10,
   },
   wordmark: {
     color: theme.colors.textPrimary,
     fontSize: 20,
-    fontWeight: '900', fontFamily: theme.fonts.extraBold,
+    fontFamily: theme.fonts.display,
     letterSpacing: 3,
   },
   tagPill: {
@@ -81,9 +66,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: theme.colors.surface,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderWidth: 1,
-    borderColor: theme.colors.surfaceBorder,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
     alignItems: 'center',
     justifyContent: 'center',
   },

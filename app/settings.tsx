@@ -153,11 +153,11 @@ export default function SettingsScreen() {
           </TouchableOpacity>
           <View style={styles.toggleDivider} />
           <TouchableOpacity style={styles.linkRow} onPress={confirmDeleteAccount} disabled={deleting}>
-            <Text style={[styles.linkLabel, { color: '#FF6B6B' }]}>Delete Account</Text>
+            <Text style={[styles.linkLabel, { color: theme.colors.danger }]}>Delete Account</Text>
             {deleting ? (
-              <ActivityIndicator size="small" color="#FF6B6B" />
+              <ActivityIndicator size="small" color={theme.colors.danger} />
             ) : (
-              <Ionicons name="chevron-forward" size={16} color="#FF6B6B" />
+              <Ionicons name="chevron-forward" size={16} color={theme.colors.danger} />
             )}
           </TouchableOpacity>
         </View>
@@ -227,7 +227,7 @@ function ToggleRow({
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: theme.colors.bg },
+  safeArea: { flex: 1, backgroundColor: theme.colors.screen },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

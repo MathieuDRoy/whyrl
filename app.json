@@ -2,11 +2,11 @@
   "expo": {
     "name": "Whyrl",
     "slug": "whyrl",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "scheme": "whyrl",
     "userInterfaceStyle": "dark",
-    "backgroundColor": "#0A0A0A",
+    "backgroundColor": "#152D35",
     "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": true,
@@ -19,7 +19,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#0A0A0A"
+        "backgroundColor": "#D4ECDD"
       },
       "package": "com.mathieudroy.whyrl"
     },
@@ -37,7 +37,7 @@
         {
           "image": "./assets/splash.png",
           "resizeMode": "contain",
-          "backgroundColor": "#0A0A0A"
+          "backgroundColor": "#152D35"
         }
       ],
       [
@@ -95,8 +95,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
-          "color": "#0A0A0A"
+          "icon": "./assets/notification-icon.png",
+          "color": "#152D35"
         }
       ]
     ],

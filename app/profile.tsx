@@ -272,7 +272,7 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: theme.colors.bg },
+  safeArea: { flex: 1, backgroundColor: theme.colors.screen },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   },
   nameInput: {
     width: '100%',
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderWidth: 1,
     borderColor: theme.colors.accent,
     borderRadius: theme.radius.md,
@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 9,
     borderRadius: theme.radius.full,
-    backgroundColor: theme.colors.bg,
+    backgroundColor: theme.colors.field,
     borderWidth: 1,
     borderColor: theme.colors.surfaceBorder,
   },
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
     fontWeight: '700', fontFamily: theme.fonts.bold,
   },
   nameError: {
-    color: '#FF6B6B',
+    color: theme.colors.danger,
     fontSize: 12,
     textAlign: 'center',
   },
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: theme.radius.full,
   },
-  browseBtnText: { color: '#000', fontSize: 14, fontWeight: '800', fontFamily: theme.fonts.extraBold },
+  browseBtnText: { color: theme.colors.bg, fontSize: 14, fontWeight: '800', fontFamily: theme.fonts.extraBold },
   grid: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   column: { flex: 1 },
   guestPrompt: {
@@ -470,5 +470,5 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     borderRadius: theme.radius.full,
   },
-  guestSignInText: { color: '#000', fontSize: 14, fontWeight: '800', fontFamily: theme.fonts.extraBold },
+  guestSignInText: { color: theme.colors.bg, fontSize: 14, fontWeight: '800', fontFamily: theme.fonts.extraBold },
 });
