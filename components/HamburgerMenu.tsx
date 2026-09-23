@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   Platform,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -24,6 +25,12 @@ interface Props {
 
 const { width: SCREEN_W } = Dimensions.get('window');
 const DRAWER_W = Math.min(SCREEN_W * 0.82, 320);
+
+const SOCIAL_LINKS: { icon: any; url: string; label: string }[] = [
+  { icon: 'logo-x', url: 'https://x.com/WhyrlApp', label: 'Whyrl on X' },
+  { icon: 'logo-instagram', url: 'https://www.instagram.com/whyrlnews/', label: 'Whyrl on Instagram' },
+  { icon: 'logo-facebook', url: 'https://www.facebook.com/profile.php?id=61594895091318', label: 'Whyrl on Facebook' },
+];
 
 export default function HamburgerMenu({ visible, onClose }: Props) {
   const { state, dispatch } = useApp();
@@ -118,6 +125,18 @@ export default function HamburgerMenu({ visible, onClose }: Props) {
                   <Text style={styles.signOutText}>Sign In / Create Account</Text>
                 </TouchableOpacity>
               )}
+              <View style={styles.socialRow}>
+                {SOCIAL_LINKS.map((s) => (
+                  <TouchableOpacity
+                    key={s.icon}
+                    style={styles.socialBtn}
+                    onPress={() => Linking.openURL(s.url)}
+                    accessibilityLabel={s.label}
+                  >
+                    <Ionicons name={s.icon} size={16} color={theme.colors.textMuted} />
+                  </TouchableOpacity>
+                ))}
+              </View>
               <Text style={styles.versionText}>Whyrl v1.0.0</Text>
             </View>
           </ScrollView>
@@ -337,5 +356,17 @@ const styles = StyleSheet.create({
   versionText: {
     color: theme.colors.textMuted,
     fontSize: 11,
+  },
+  socialRow: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  socialBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: theme.colors.surfaceElevated,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
