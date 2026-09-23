@@ -12,6 +12,7 @@ import { sendPushNotifications } from './services/expoPush';
 import { postCardTweet } from './services/twitter';
 import { renderCardImage } from './services/cardImage';
 import { postCardToInstagram } from './services/instagram';
+import { postCardToFacebook } from './services/facebook';
 import { CACHE_TTL_MINUTES, createCache } from './cache';
 import { TrendCard } from './types';
 
@@ -177,14 +178,35 @@ async function postNextSocialUpdate() {
       console.error('[twitter] failed to post:', err?.message ?? err);
     }
 
+    // Instagram and Facebook both post the same generated image (rendered
+    // once, reused for both) with the same caption style as the tweet -
+    // summary + hashtags, just not truncated to 280 characters since neither
+    // platform needs that constraint.
+    let imageUrl: string | null = null;
     try {
       const image = await renderCardImage(card);
       const token = registerCardImage(image);
-      const imageUrl = `${PUBLIC_BASE_URL}/api/card-image/${token}.png`;
-      await postCardToInstagram(imageUrl, `${card.summary}\n\n${card.hashtags.slice(0, 4).map((h) => `#${h}`).join(' ')}`);
-      console.log(`[instagram] posted (${category}):`, card.title);
+      imageUrl = `${PUBLIC_BASE_URL}/api/card-image/${token}.png`;
     } catch (err: any) {
-      console.error('[instagram] failed to post:', err?.message ?? err);
+      console.error('[social] failed to render card image:', err?.message ?? err);
+    }
+
+    if (imageUrl) {
+      const caption = `${card.summary}\n\n${card.hashtags.slice(0, 4).map((h) => `#${h}`).join(' ')}`;
+
+      try {
+        await postCardToInstagram(imageUrl, caption);
+        console.log(`[instagram] posted (${category}):`, card.title);
+      } catch (err: any) {
+        console.error('[instagram] failed to post:', err?.message ?? err);
+      }
+
+      try {
+        await postCardToFacebook(imageUrl, caption);
+        console.log(`[facebook] posted (${category}):`, card.title);
+      } catch (err: any) {
+        console.error('[facebook] failed to post:', err?.message ?? err);
+      }
     }
 
     await postedCardsCache.set(postedKey(card), true);
