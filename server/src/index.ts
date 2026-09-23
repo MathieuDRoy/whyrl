@@ -166,8 +166,16 @@ async function postNextSocialUpdate() {
     }
     const { card, category, categoryIndex } = picked;
 
-    await postCardTweet(card);
-    console.log(`[twitter] posted (${category}):`, card.title);
+    // X and Instagram are independent - one platform being down (rate
+    // limited, revoked token, duplicate-content rejection, etc.) shouldn't
+    // stop the other from posting, and shouldn't stall the whole rotation
+    // on a card that a permanently-broken platform will never accept.
+    try {
+      await postCardTweet(card);
+      console.log(`[twitter] posted (${category}):`, card.title);
+    } catch (err: any) {
+      console.error('[twitter] failed to post:', err?.message ?? err);
+    }
 
     try {
       const image = await renderCardImage(card);

@@ -42,5 +42,13 @@ export function buildTweetText(card: TrendCard): string {
 export async function postCardTweet(card: TrendCard): Promise<void> {
   const twitter = getClient();
   if (!twitter) return;
-  await twitter.v2.tweet(buildTweetText(card));
+  try {
+    await twitter.v2.tweet(buildTweetText(card));
+  } catch (err: any) {
+    // twitter-api-v2 throws with a generic "Request failed with code 403"
+    // message and buries the actual reason (duplicate content, permission
+    // issue, etc.) in .data - surface that instead of just the status code.
+    const detail = err?.data?.detail ?? err?.data?.title ?? JSON.stringify(err?.data ?? {});
+    throw new Error(`${err?.message ?? 'tweet failed'} — ${detail}`);
+  }
 }
