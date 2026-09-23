@@ -6,14 +6,20 @@ import cors from 'cors';
 import trendsRouter, { ALL_CATEGORIES, getTrends } from './routes/trends';
 import pushRouter from './routes/push';
 import accountRouter from './routes/account';
+import cardImageRouter, { registerCardImage } from './routes/cardImage';
 import { getPushTokens } from './services/pushTokens';
 import { sendPushNotifications } from './services/expoPush';
 import { postCardTweet } from './services/twitter';
+import { renderCardImage } from './services/cardImage';
+import { postCardToInstagram } from './services/instagram';
 import { CACHE_TTL_MINUTES, createCache } from './cache';
 import { TrendCard } from './types';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
+// Used to build a publicly fetchable URL for a generated card image, since
+// Instagram's Graph API fetches images by URL rather than taking an upload.
+const PUBLIC_BASE_URL = process.env.PUBLIC_BASE_URL ?? 'https://whyrl-production.up.railway.app';
 
 app.use(cors({ origin: '*' }));
 app.use(express.json());
@@ -22,6 +28,7 @@ app.get('/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/trends', trendsRouter);
 app.use('/api/push', pushRouter);
 app.use('/api/account', accountRouter);
+app.use('/api/card-image', cardImageRouter);
 
 const ALL_REGIONS = ['NA', 'EU'];
 
@@ -98,20 +105,26 @@ async function maybeSendDailyNotification() {
   }
 }
 
-// Posts one NA card every TWEET_INTERVAL_MS, cycling through categories
-// (politics, finance, ...) round-robin so we don't just repeatedly post
-// whichever category tends to trend highest. Within the chosen category, the
-// most RECENT card (by the story's own published timestamp) is posted, not
-// the one with the highest trendingScore or whatever order it happens to
-// appear in the cache - the goal is fresh news, not stale-but-viral news.
-// The cursor persists in the same cache backend as everything else here, so
-// a restart resumes the rotation instead of starting over from politics.
+// Posts one NA card to X and Instagram every SOCIAL_POST_INTERVAL_MS, cycling
+// through categories (politics, finance, ...) round-robin so we don't just
+// repeatedly post whichever category tends to trend highest. Within the
+// chosen category, the most RECENT card (by the story's own published
+// timestamp) is posted, not the one with the highest trendingScore or
+// whatever order it happens to appear in the cache - the goal is fresh news,
+// not stale-but-viral news. The cursor persists in the same cache backend as
+// everything else here, so a restart resumes the rotation instead of
+// starting over from politics. Both platforms post the same chosen card so
+// the two feeds stay in sync rather than drifting to different stories.
 //
 // Cards don't carry a stable id across refreshes (Claude regenerates it per
 // batch), so "already posted" is tracked by title - the actual identity of a
 // story - rather than id, which could collide with an unrelated card from a
 // different refresh.
-const TWEET_INTERVAL_MS = 2 * 60 * 60 * 1000;
+const SOCIAL_POST_INTERVAL_MS = 2 * 60 * 60 * 1000;
+// Keeping the original "twitter-*" cache key prefixes (not renamed to
+// "social-*") even though this now also drives Instagram - renaming would
+// orphan the existing Redis-persisted posted-titles/cursor state and risk
+// immediately re-posting whatever was just posted before this deployed.
 const postedCardsCache = createCache<true>('twitter-posted', 60 * 60 * 48);
 const categoryCursorCache = createCache<number>('twitter-category-cursor', 60 * 60 * 24 * 30);
 
@@ -119,37 +132,57 @@ function postedKey(card: TrendCard): string {
   return card.title.trim().toLowerCase();
 }
 
-async function postNextTweet() {
+// Starts at the cursor's category and walks forward through the rotation
+// until it finds one with something unposted, so a starved category
+// (nothing new since last cycle) doesn't stall the whole job.
+async function pickNextCard(cards: TrendCard[]): Promise<{ card: TrendCard; category: string; categoryIndex: number } | null> {
+  const cursor = (await categoryCursorCache.get('cursor')) ?? 0;
+
+  for (let i = 0; i < ALL_CATEGORIES.length; i++) {
+    const categoryIndex = (cursor + i) % ALL_CATEGORIES.length;
+    const category = ALL_CATEGORIES[categoryIndex];
+
+    const unposted: TrendCard[] = [];
+    for (const card of cards.filter((c) => c.category === category)) {
+      if (!(await postedCardsCache.get(postedKey(card)))) unposted.push(card);
+    }
+    if (unposted.length === 0) continue;
+
+    const newest = unposted.reduce((best, c) =>
+      new Date(c.timestamp).getTime() > new Date(best.timestamp).getTime() ? c : best,
+    );
+    return { card: newest, category, categoryIndex };
+  }
+  return null;
+}
+
+async function postNextSocialUpdate() {
   try {
     const { cards } = await getTrends('NA', ALL_CATEGORIES);
-    const cursor = (await categoryCursorCache.get('cursor')) ?? 0;
-
-    // Start at the cursor's category and walk forward through the rotation
-    // until we find a category with something unposted, so a starved
-    // category (nothing new since last cycle) doesn't stall the whole job.
-    for (let i = 0; i < ALL_CATEGORIES.length; i++) {
-      const categoryIndex = (cursor + i) % ALL_CATEGORIES.length;
-      const category = ALL_CATEGORIES[categoryIndex];
-
-      const unposted: TrendCard[] = [];
-      for (const card of cards.filter((c) => c.category === category)) {
-        if (!(await postedCardsCache.get(postedKey(card)))) unposted.push(card);
-      }
-      if (unposted.length === 0) continue;
-
-      const newest = unposted.reduce((best, c) =>
-        new Date(c.timestamp).getTime() > new Date(best.timestamp).getTime() ? c : best,
-      );
-      await postCardTweet(newest);
-      await postedCardsCache.set(postedKey(newest), true);
-      await categoryCursorCache.set('cursor', (categoryIndex + 1) % ALL_CATEGORIES.length);
-      console.log(`[twitter] posted (${category}):`, newest.title);
+    const picked = await pickNextCard(cards);
+    if (!picked) {
+      console.log('[social] no unposted cards in any category this cycle — skipping');
       return;
     }
+    const { card, category, categoryIndex } = picked;
 
-    console.log('[twitter] no unposted cards in any category this cycle — skipping');
+    await postCardTweet(card);
+    console.log(`[twitter] posted (${category}):`, card.title);
+
+    try {
+      const image = await renderCardImage(card);
+      const token = registerCardImage(image);
+      const imageUrl = `${PUBLIC_BASE_URL}/api/card-image/${token}.png`;
+      await postCardToInstagram(imageUrl, `${card.summary}\n\n${card.hashtags.slice(0, 4).map((h) => `#${h}`).join(' ')}`);
+      console.log(`[instagram] posted (${category}):`, card.title);
+    } catch (err: any) {
+      console.error('[instagram] failed to post:', err?.message ?? err);
+    }
+
+    await postedCardsCache.set(postedKey(card), true);
+    await categoryCursorCache.set('cursor', (categoryIndex + 1) % ALL_CATEGORIES.length);
   } catch (err: any) {
-    console.error('[twitter] failed to post:', err?.message ?? err);
+    console.error('[social] failed to post:', err?.message ?? err);
   }
 }
 
@@ -159,13 +192,14 @@ app.listen(Number(PORT), '0.0.0.0', () => {
     console.warn('WARNING: ANTHROPIC_API_KEY is not set - Claude calls will fail');
   }
 
-  // Warm NA first, then all other regions in the background. postNextTweet
-  // waits for this instead of running immediately alongside it - both key
-  // off the same NA cache entry, and firing at the same time on a cold cache
-  // would trigger two concurrent NewsAPI+Claude fetches instead of one.
+  // Warm NA first, then all other regions in the background.
+  // postNextSocialUpdate waits for this instead of running immediately
+  // alongside it - both key off the same NA cache entry, and firing at the
+  // same time on a cold cache would trigger two concurrent NewsAPI+Claude
+  // fetches instead of one.
   refreshTrends(false).then(() => {
     warmAllRegions();
-    postNextTweet();
+    postNextSocialUpdate();
   });
 
   // Force a full refresh once per cache TTL window.
@@ -179,5 +213,5 @@ app.listen(Number(PORT), '0.0.0.0', () => {
   maybeSendDailyNotification();
   setInterval(maybeSendDailyNotification, NOTIFICATION_CHECK_INTERVAL_MS);
 
-  setInterval(postNextTweet, TWEET_INTERVAL_MS);
+  setInterval(postNextSocialUpdate, SOCIAL_POST_INTERVAL_MS);
 });
