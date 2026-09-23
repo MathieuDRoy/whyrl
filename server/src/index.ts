@@ -227,9 +227,19 @@ app.listen(Number(PORT), '0.0.0.0', () => {
   // alongside it - both key off the same NA cache entry, and firing at the
   // same time on a cold cache would trigger two concurrent NewsAPI+Claude
   // fetches instead of one.
+  //
+  // The first run is also delayed by SOCIAL_STARTUP_DELAY_MS after that: on
+  // a warm cache this whole chain resolves in well under a second, which is
+  // too early in the container's boot for Railway's edge/proxy to have
+  // finished routing public traffic to it. Instagram/Facebook fetch our
+  // self-hosted card image by URL as part of posting, and that fetch was
+  // failing outright (fast, before any real processing) whenever it landed
+  // in that window - a plain tweet has no such dependency, so only the
+  // image-posting platforms were affected.
+  const SOCIAL_STARTUP_DELAY_MS = 20 * 1000;
   refreshTrends(false).then(() => {
     warmAllRegions();
-    postNextSocialUpdate();
+    setTimeout(postNextSocialUpdate, SOCIAL_STARTUP_DELAY_MS);
   });
 
   // Force a full refresh once per cache TTL window.
